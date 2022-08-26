@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 
+class Login {
+  final String email;
+  final String senha;
+
+  Login(this.email, this.senha);
+
+  @override
+  String toString() {
+    return 'Email = $email, Senha = $senha';
+  }
+}
+
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
+
+  final TextEditingController _controladorCampoEmail = TextEditingController();
+  final TextEditingController _controladorCampoSenha = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    Login login;
+
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.only(
@@ -24,6 +41,7 @@ class LoginPage extends StatelessWidget {
               height: 20,
             ),
             TextFormField(
+              controller: _controladorCampoEmail,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: "Email",
@@ -33,14 +51,13 @@ class LoginPage extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              style: const TextStyle(
-                fontSize: 20
-                ),
+              style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
+              controller: _controladorCampoSenha,
               keyboardType: TextInputType.text,
               obscureText: true,
               decoration: const InputDecoration(
@@ -51,9 +68,7 @@ class LoginPage extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              style: const TextStyle(
-                fontSize: 20
-                ),
+              style: const TextStyle(fontSize: 20),
             ),
             Container(
               height: 40,
@@ -63,7 +78,8 @@ class LoginPage extends StatelessWidget {
                   "Esqueceu a senha ?",
                   textAlign: TextAlign.right,
                 ),
-                onPressed: (){}, /*
+                onPressed:
+                    () {}, /*
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -85,62 +101,69 @@ class LoginPage extends StatelessWidget {
                   end: Alignment.bottomRight,
                   stops: const [0.3, 1],
                   colors: [
-                 Colors.blue[900]!,
-                 Colors.blue,
-            ],
-          ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(5),
+                    Colors.blue[900]!,
+                    Colors.blue,
+                  ],
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+              child: SizedBox.expand(
+                child: TextButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const <Widget>[
+                        Text(
+                          "Login",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => {
+                          login = Login(_controladorCampoEmail.text,
+                              _controladorCampoSenha.text),
+                          debugPrint(login.toString())
+                        } // chamar o metodo que vai conexão com a api e validar o login
+                    ),
+              ),
             ),
-          ),
-          child: SizedBox.expand(
-            child: TextButton(
+            const SizedBox(
+              height: 70,
+            ),
+            SizedBox(
+              height: 40,
+              // ignore: prefer_const_constructors
               child: Row(
+                //onPressed: () {},
+                //child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  Text(
-                    "Login",
-                    textAlign: TextAlign.center,
-                    style:  TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),  
-                  ),
+                children: <Widget>[
+                  Text("Não tem acesso?"),
+                  TextButton(
+                    onPressed: () {},
+                    // ignore: prefer_const_constructors
+                    child: Text(
+                      "  Cadastre-se",
+                      //textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.lightBlue,
+                        fontSize: 15,
+                      ),
+                    ),
+                  )
                 ],
               ),
-              onPressed: () => {},
             ),
-          ),
+          ],
         ),
-        const SizedBox(
-          height: 70,
-        ),
-        Container(
-          height: 40,
-          // ignore: prefer_const_constructors
-          child: TextButton(
-            onPressed: () {},
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[ 
-                Text("Não tem acesso?"),
-                Text(
-                  "  Cadastre-se",
-                  //textAlign: TextAlign.center,
-                  style:  TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.lightBlue,
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            )
-                ),
-              ),
-          ], 
-        ),
-      ),  
+      ),
     );
   }
 }
