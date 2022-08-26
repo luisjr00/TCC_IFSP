@@ -129,7 +129,7 @@ class LoginPage extends StatelessWidget {
                           login = Login(_controladorCampoEmail.text,
                               _controladorCampoSenha.text),
                           debugPrint(login.toString())
-                        } // chamar o metodo que vai conexão com a api e validar o login,
+                        } // chamar o metodo que vai conexão com a api e validar o login
                     ),
               ),
             ),
