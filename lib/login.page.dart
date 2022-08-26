@@ -136,7 +136,7 @@ class LoginPage extends StatelessWidget {
             const SizedBox(
               height: 70,
             ),
-            Container(
+            SizedBox(
               height: 40,
               // ignore: prefer_const_constructors
               child: Row(

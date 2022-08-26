@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/tarefa.page.dart';
 import 'package:http/http.dart' as http;
 
 class TarefasPage extends StatelessWidget {
@@ -16,6 +17,7 @@ class TarefasPage extends StatelessWidget {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -33,11 +35,20 @@ class TarefasPage extends StatelessWidget {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
+                  var tarefa = snapshot.data![index];
                   return Card(
                     child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TarefaPage(tarefa: tarefa),
+                          ),
+                        );
+                      }, // chamar metodo que mostra a tarefa,
                       leading: const Icon(Icons.calendar_today, size: 50),
-                      title: Text(snapshot.data![index]['descricao']),
-                      subtitle: Text(snapshot.data![index]['dataInicio']),
+                      title: Text(tarefa['descricao']),
+                      subtitle: Text(tarefa['dataInicio']),
                     ),
                   );
                 },
