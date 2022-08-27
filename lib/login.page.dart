@@ -1,5 +1,9 @@
+// ignore_for_file: deprecated_member_use
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cadastro.page.dart';
+import 'package:flutter_application_1/tarefas.page.dart';
+import 'package:http/http.dart' as http;
 
 class Login {
   final String email;
@@ -14,6 +18,16 @@ class Login {
 }
 
 class LoginPage extends StatelessWidget {
+  Future<http.Response> buscaLoginApi(String login, String senha) async {
+    var headers = {'Content-Type': 'Application/json'};
+
+    var loginJson = jsonEncode({'Username': login, 'Password': senha});
+    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/login");
+    var response = await http.post(url, headers: headers, body: loginJson);
+
+    return response;
+  }
+
   LoginPage({Key? key}) : super(key: key);
 
   final TextEditingController _controladorCampoEmail = TextEditingController();
@@ -22,6 +36,37 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Login login;
+
+    void realizaLogin(Login login) async {
+      var response = await buscaLoginApi(login.email, login.senha);
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TarefasPage(json: json)),
+        );
+      } else {
+        Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("ALERTA"),
+              content: Text("Login invalido"),
+              actions: [
+                okButton,
+              ],
+            );
+          },
+        );
+      }
+    }
 
     return Scaffold(
       body: Container(
@@ -43,7 +88,7 @@ class LoginPage extends StatelessWidget {
             ),
             TextFormField(
               controller: _controladorCampoEmail,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.name,
               decoration: const InputDecoration(
                 labelText: "Email",
                 labelStyle: TextStyle(
@@ -129,7 +174,7 @@ class LoginPage extends StatelessWidget {
                     onPressed: () => {
                           login = Login(_controladorCampoEmail.text,
                               _controladorCampoSenha.text),
-                          debugPrint(login.toString())
+                          realizaLogin(login),
                         } // chamar o metodo que vai conexão com a api e validar o login
                     ),
               ),
@@ -149,11 +194,11 @@ class LoginPage extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CadastroPage(),
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CadastroPage(),
+                        ),
+                      );
                     },
                     // ignore: prefer_const_constructors
                     child: Text(

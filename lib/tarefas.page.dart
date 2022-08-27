@@ -5,7 +5,9 @@ import 'package:flutter_application_1/tarefa.page.dart';
 import 'package:http/http.dart' as http;
 
 class TarefasPage extends StatelessWidget {
-  const TarefasPage({Key? key}) : super(key: key);
+  var json;
+
+  TarefasPage({Key? key, required this.json}) : super(key: key);
 
   Future<List> pegarTarefas() async {
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
@@ -22,6 +24,7 @@ class TarefasPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tarefas"),
+        leading: const Icon(Icons.calendar_today),
       ),
       body: FutureBuilder<List>(
           future: pegarTarefas(),
