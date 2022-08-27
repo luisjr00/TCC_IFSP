@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/cadastro.page.dart';
 
 class Login {
   final String email;
@@ -140,16 +141,23 @@ class LoginPage extends StatelessWidget {
               height: 40,
               // ignore: prefer_const_constructors
               child: Row(
-                //onPressed: () {},
+                //onPressed: () {},              CadastroPage
                 //child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Não tem acesso?"),
+                  const Text("Não tem acesso? "),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CadastroPage(),
+                      ),
+                    );
+                    },
                     // ignore: prefer_const_constructors
                     child: Text(
-                      "  Cadastre-se",
+                      "Cadastre-se",
                       //textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,

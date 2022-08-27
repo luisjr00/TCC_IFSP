@@ -5,7 +5,7 @@ import 'package:flutter_application_1/tarefa.page.dart';
 import 'package:http/http.dart' as http;
 
 class TarefasPage extends StatelessWidget {
-  TarefasPage({Key? key}) : super(key: key);
+  const TarefasPage({Key? key}) : super(key: key);
 
   Future<List> pegarTarefas() async {
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
@@ -27,7 +27,7 @@ class TarefasPage extends StatelessWidget {
           future: pegarTarefas(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
+              return const Center(
                 child: Text('Erro ao carregar tarefas'),
               );
             }
@@ -54,7 +54,7 @@ class TarefasPage extends StatelessWidget {
                 },
               );
             }
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }),
