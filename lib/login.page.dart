@@ -19,13 +19,12 @@ class Login {
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-  
+
   @override
   State<LoginPage> createState() => _LoginPage();
 }
 
 class _LoginPage extends State<LoginPage> {
-
   Future<http.Response> buscaLoginApi(String login, String senha) async {
     var headers = {'Content-Type': 'Application/json'};
 
@@ -35,21 +34,20 @@ class _LoginPage extends State<LoginPage> {
 
     return response;
   }
-  
+
   final TextEditingController _controladorCampoEmail = TextEditingController();
   final TextEditingController _controladorCampoSenha = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    
     bool mostrarSenha = false;
     Login login;
 
-      void _teste() {
-        setState(() {
-          mostrarSenha = !mostrarSenha;
-        });
-      }
+    void _teste() {
+      setState(() {
+        mostrarSenha = !mostrarSenha;
+      });
+    }
 
     void realizaLogin(Login login) async {
       var response = await buscaLoginApi(login.email, login.senha);
@@ -60,7 +58,7 @@ class _LoginPage extends State<LoginPage> {
           context,
           MaterialPageRoute(builder: (context) => TarefasPage(json: json)),
         );
-      }else {
+      } else {
         Widget okButton = FlatButton(
           child: const Text("OK"),
           onPressed: () {
@@ -125,7 +123,9 @@ class _LoginPage extends State<LoginPage> {
                 prefixIcon: const Icon(Icons.lock),
                 suffixIcon: GestureDetector(
                   onTap: _teste,
-                  child: Icon(mostrarSenha == false ? Icons.visibility_off : Icons.visibility),
+                  child: Icon(mostrarSenha == false
+                      ? Icons.visibility_off
+                      : Icons.visibility),
                 ),
                 labelStyle: const TextStyle(
                   color: Colors.black38,
