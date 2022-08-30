@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/tarefa.page.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class TarefasPage extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   var json;
 
   TarefasPage({Key? key, required this.json}) : super(key: key);

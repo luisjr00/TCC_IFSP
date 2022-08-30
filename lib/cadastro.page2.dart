@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
-class CadastroPage extends StatelessWidget {
-  const CadastroPage({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class CadastroPage2 extends StatefulWidget {
+  const CadastroPage2({Key? key}) : super(key: key);
+  
+  @override
+  State<CadastroPage2> createState() => _CadastroPage2();
+}
+
+
+class _CadastroPage2 extends State<CadastroPage2> {
 
   @override
   Widget build (BuildContext context) {
@@ -13,9 +21,7 @@ class CadastroPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
-      body: Container(
-        color: Colors.white,
-      ),
     );
   }
-}
+}       
+      

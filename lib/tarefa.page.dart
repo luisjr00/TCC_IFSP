@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class TarefaPage extends StatelessWidget {
   Map<String, dynamic> tarefa;
   TarefaPage({Key? key, required this.tarefa}) : super(key: key);

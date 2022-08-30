@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/cadastro.page.dart';
+import 'package:flutter_application_1/cadastro.page1.dart';
 import 'package:flutter_application_1/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +17,15 @@ class Login {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+  
+  @override
+  State<LoginPage> createState() => _LoginPage();
+}
+
+class _LoginPage extends State<LoginPage> {
+
   Future<http.Response> buscaLoginApi(String login, String senha) async {
     var headers = {'Content-Type': 'Application/json'};
 
@@ -27,15 +35,21 @@ class LoginPage extends StatelessWidget {
 
     return response;
   }
-
-  LoginPage({Key? key}) : super(key: key);
-
+  
   final TextEditingController _controladorCampoEmail = TextEditingController();
   final TextEditingController _controladorCampoSenha = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    
+    bool mostrarSenha = false;
     Login login;
+
+      void _teste() {
+        setState(() {
+          mostrarSenha = !mostrarSenha;
+        });
+      }
 
     void realizaLogin(Login login) async {
       var response = await buscaLoginApi(login.email, login.senha);
@@ -46,9 +60,9 @@ class LoginPage extends StatelessWidget {
           context,
           MaterialPageRoute(builder: (context) => TarefasPage(json: json)),
         );
-      } else {
+      }else {
         Widget okButton = FlatButton(
-          child: Text("OK"),
+          child: const Text("OK"),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -57,8 +71,8 @@ class LoginPage extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("ALERTA"),
-              content: Text("Login invalido"),
+              title: const Text("ALERTA"),
+              content: const Text("Login invalido"),
               actions: [
                 okButton,
               ],
@@ -88,8 +102,9 @@ class LoginPage extends StatelessWidget {
             ),
             TextFormField(
               controller: _controladorCampoEmail,
-              keyboardType: TextInputType.name,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.mail),
                 labelText: "Email",
                 labelStyle: TextStyle(
                   color: Colors.black38,
@@ -104,16 +119,21 @@ class LoginPage extends StatelessWidget {
             ),
             TextFormField(
               controller: _controladorCampoSenha,
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              decoration: const InputDecoration(
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
                 labelText: "Senha",
-                labelStyle: TextStyle(
+                prefixIcon: const Icon(Icons.lock),
+                suffixIcon: GestureDetector(
+                  onTap: _teste,
+                  child: Icon(mostrarSenha == false ? Icons.visibility_off : Icons.visibility),
+                ),
+                labelStyle: const TextStyle(
                   color: Colors.black38,
                   fontWeight: FontWeight.w400,
                   fontSize: 20,
                 ),
               ),
+              obscureText: mostrarSenha == false ? true : false,
               style: const TextStyle(fontSize: 20),
             ),
             Container(
@@ -140,6 +160,7 @@ class LoginPage extends StatelessWidget {
             ),
             Container(
               height: 60,
+              width: 20,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -196,7 +217,7 @@ class LoginPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CadastroPage(),
+                          builder: (context) => const CadastroPage1(),
                         ),
                       );
                     },
