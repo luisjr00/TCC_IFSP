@@ -7,13 +7,15 @@ import 'package:http/http.dart' as http;
 // ignore: must_be_immutable
 class TarefasPage extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
-  var json;
+  var token;
 
-  TarefasPage({Key? key, required this.json}) : super(key: key);
+  TarefasPage({Key? key, required this.token}) : super(key: key);
 
   Future<List> pegarTarefas() async {
+    var headers = {'Authorization': 'Bearer $token'};
+
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
-    var response = await http.get(url);
+    var response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {

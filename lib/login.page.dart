@@ -31,7 +31,6 @@ class _LoginPage extends State<LoginPage> {
     var loginJson = jsonEncode({'Username': login, 'Password': senha});
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/login");
     var response = await http.post(url, headers: headers, body: loginJson);
-
     return response;
   }
 
@@ -52,11 +51,12 @@ class _LoginPage extends State<LoginPage> {
     void realizaLogin(Login login) async {
       var response = await buscaLoginApi(login.email, login.senha);
       if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
-        // ignore: use_build_context_synchronously
+        var json = jsonDecode(utf8.decode(response.bodyBytes));
+        String token = json[0]['message'];
+        //ignore: use_build_context_synchronously
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TarefasPage(json: json)),
+          MaterialPageRoute(builder: (context) => TarefasPage(token: token)),
         );
       } else {
         Widget okButton = FlatButton(
@@ -217,7 +217,7 @@ class _LoginPage extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CadastroPage1(),
+                          builder: (context) => CadastroPage1(),
                         ),
                       );
                     },

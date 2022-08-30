@@ -7,7 +7,8 @@ import 'dart:convert';
 
 // ignore: must_be_immutable
 class CadastroPage1 extends StatefulWidget {
-  const CadastroPage1({Key? key}) : super(key: key);
+  CadastroPage1({Key? key}) : super(key: key);
+  final TextEditingController _controladorCampoNome = TextEditingController();
 
   @override
   State<CadastroPage1> createState() => _CadastroPage1();
@@ -246,11 +247,11 @@ class _CadastroPage1 extends State<CadastroPage1> {
               decoration: InputDecoration(
                 labelText: "Senha",
                 prefixIcon: const Icon(Icons.lock),
-                suffixIcon: GestureDetector(
-                  child: Icon(_mostrarSenha == false
+                suffixIcon: IconButton(
+                  icon: Icon(_mostrarSenha == false
                       ? Icons.visibility_off
                       : Icons.visibility),
-                  onTap: () {
+                  onPressed: () {
                     setState(() {
                       _mostrarSenha = !_mostrarSenha;
                     });
@@ -275,11 +276,11 @@ class _CadastroPage1 extends State<CadastroPage1> {
               decoration: InputDecoration(
                 labelText: "Confirmar Senha",
                 prefixIcon: const Icon(Icons.lock_reset),
-                suffixIcon: GestureDetector(
-                  child: Icon(_mostrarConfSenha == false
+                suffixIcon: IconButton(
+                  icon: Icon(_mostrarConfSenha == false
                       ? Icons.visibility_off
                       : Icons.visibility),
-                  onTap: () {
+                  onPressed: () {
                     setState(() {
                       _mostrarConfSenha = !_mostrarConfSenha;
                     });
