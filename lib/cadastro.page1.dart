@@ -112,7 +112,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
               height: 5,
             ),
             const Text(
-              "Tela de Cadastro",
+              "Tela de Cadastro Responsavel",
               textAlign: TextAlign.center,
               style: TextStyle(
                 //fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
               controller: _controladorCampoUsername,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: Icon(Icons.account_circle_outlined),
                 //hintText: "Ex: Luan Nascimento Júnior",Luis
                 labelText: "Username",
                 labelStyle: TextStyle(
@@ -158,7 +158,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
               controller: _controladorCampoCpf,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: Icon(Icons.pin),
                 //hintText: "Ex: Luan Nascimento Júnior",Luis
                 labelText: "CPF",
                 labelStyle: TextStyle(
@@ -173,7 +173,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
               controller: _controladorCampoDataNasc,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: Icon(Icons.calendar_month),
                 //hintText: "Ex: Luan Nascimento Júnior",Luis
                 labelText: "Data Nascimento",
                 labelStyle: TextStyle(
@@ -314,7 +314,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
                         _controladorCampoEndereco.text,
                         _controladorCampoSenha.text,
                         _controladorCampoConfSenha.text);
-                    validaCadastro(cadastro);
+                    //validaCadastro(cadastro);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
