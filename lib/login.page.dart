@@ -41,7 +41,6 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-     
     Login login;
 
     void realizaLogin(Login login) async {
@@ -112,35 +111,35 @@ class _LoginPage extends State<LoginPage> {
               height: 20,
             ),
             TextFormField(
-                controller: _controladorCampoSenha,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  labelText: "Senha",
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(_mostrarSenha == false
-                        ? Icons.visibility_off
-                        : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        _mostrarSenha = !_mostrarSenha;
-                      });
-                    },
-                  ),
-                  //hintText: "*******",
-                  labelStyle: const TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                  ),
+              controller: _controladorCampoSenha,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                labelText: "Senha",
+                prefixIcon: const Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  icon: Icon(_mostrarSenha == false
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _mostrarSenha = !_mostrarSenha;
+                    });
+                  },
                 ),
-                obscureText: _mostrarSenha == false ? true : false,
-                style: const TextStyle(fontSize: 16),
-                // validator: Validatorless.multiple([
-                //   Validatorless.required("Campo requerido"),
-                //   Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
-                // ]),
+                //hintText: "*******",
+                labelStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                ),
               ),
+              obscureText: _mostrarSenha,
+              style: const TextStyle(fontSize: 16),
+              // validator: Validatorless.multiple([
+              //   Validatorless.required("Campo requerido"),
+              //   Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
+              // ]),
+            ),
             Container(
               height: 40,
               alignment: Alignment.centerRight,
