@@ -25,6 +25,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
+  bool _mostrarSenha = true;
+
   Future<http.Response> buscaLoginApi(String login, String senha) async {
     var headers = {'Content-Type': 'Application/json'};
 
@@ -39,14 +41,8 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool mostrarSenha = false;
+     
     Login login;
-
-    void _teste() {
-      setState(() {
-        mostrarSenha = !mostrarSenha;
-      });
-    }
 
     void realizaLogin(Login login) async {
       var response = await buscaLoginApi(login.email, login.senha);
@@ -116,26 +112,35 @@ class _LoginPage extends State<LoginPage> {
               height: 20,
             ),
             TextFormField(
-              controller: _controladorCampoSenha,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                labelText: "Senha",
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: GestureDetector(
-                  onTap: _teste,
-                  child: Icon(mostrarSenha == false
-                      ? Icons.visibility_off
-                      : Icons.visibility),
+                controller: _controladorCampoSenha,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: InputDecoration(
+                  labelText: "Senha",
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(_mostrarSenha == false
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _mostrarSenha = !_mostrarSenha;
+                      });
+                    },
+                  ),
+                  //hintText: "*******",
+                  labelStyle: const TextStyle(
+                    color: Colors.black38,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
                 ),
-                labelStyle: const TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20,
-                ),
+                obscureText: _mostrarSenha == false ? true : false,
+                style: const TextStyle(fontSize: 16),
+                // validator: Validatorless.multiple([
+                //   Validatorless.required("Campo requerido"),
+                //   Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
+                // ]),
               ),
-              obscureText: mostrarSenha == false ? true : false,
-              style: const TextStyle(fontSize: 20),
-            ),
             Container(
               height: 40,
               alignment: Alignment.centerRight,
@@ -217,7 +222,7 @@ class _LoginPage extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CadastroPage1(),
+                          builder: (context) => const CadastroPage1(),
                         ),
                       );
                     },
