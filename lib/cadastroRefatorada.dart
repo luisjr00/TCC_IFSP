@@ -14,26 +14,6 @@ class CadastroRefatorada extends StatefulWidget {
   State<CadastroRefatorada> createState() => _CadastroRefatorada();
 }
 
-class CadastroUsuario {
-  final String Nome;
-  final String Username;
-  final String Cpf;
-  final String DataNasc;
-  final String Telefone;
-  final String Email;
-  final String Endereco;
-  final String senha;
-  final String Confsenha;
-
-  CadastroUsuario(this.Nome, this.Username, this.Cpf, this.DataNasc,
-      this.Telefone, this.Email, this.Endereco, this.senha, this.Confsenha);
-
-  @override
-  String toString() {
-    return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
-  }
-}
-
 class _CadastroRefatorada extends State<CadastroRefatorada> {
   bool _mostrarSenha = false;
   bool _mostrarConfSenha = false;
@@ -117,24 +97,7 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                SizedBox(
-                  width: 78,
-                  height: 78,
-                  child: Image.asset("assets/texte_cube.jpg"),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                const Text(
-                  "Tela de Cadastro Responsável",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    //fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                    fontSize: 25,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                LogoTitulo(),
                 const SizedBox(
                   height: 15,
                 ),
@@ -177,72 +140,16 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                 const SizedBox(
                   height: 10,
                 ),
-                TextFormField(
-                  controller: _controladorCampoSenha,
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(1.0),
-                    labelText: "Senha",
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(_mostrarSenha == false
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _mostrarSenha = !_mostrarSenha;
-                        });
-                      },
-                    ),
-                    //hintText: "*******",
-                    labelStyle: const TextStyle(
-                      color: Colors.black38,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ),
-                  ),
-                  obscureText: _mostrarSenha == false ? true : false,
-                  style: const TextStyle(fontSize: 16),
-                  validator: Validatorless.multiple([
-                    Validatorless.required("Campo requerido"),
-                    Validatorless.min(
-                        6, "Senha precisa ter no mínimo 6 caracteres")
-                  ]),
+                CamposSenhas(
+                  controlador: _controladorCampoSenha,
+                  rotulo: 'Senha',
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                TextFormField(
-                  controller: _controladorCampoConfSenha,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    labelText: "Confirmar Senha",
-                    prefixIcon: const Icon(Icons.lock_reset),
-                    suffixIcon: IconButton(
-                      icon: Icon(_mostrarConfSenha == false
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _mostrarConfSenha = !_mostrarConfSenha;
-                        });
-                      },
-                    ),
-                    //hintText: "*******",
-                    labelStyle: const TextStyle(
-                      color: Colors.black38,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ),
-                  ),
-                  obscureText: _mostrarConfSenha == false ? true : false,
-                  style: const TextStyle(fontSize: 16),
-                  validator: Validatorless.multiple([
-                    Validatorless.required("Campo requerido"),
-                    Validatorless.min(
-                        6, "Senha precisa ter no mínimo 6 caracteres")
-                  ]),
-                ),
+                CamposSenhas(
+                    controlador: _controladorCampoConfSenha,
+                    rotulo: 'Confirmar Senha'),
                 const SizedBox(
                   height: 25,
                 ),
@@ -251,27 +158,17 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        var formValid =
-                            _formKey.currentState?.validate() ?? false;
-                        if (formValid) {
-                          cadastro = CadastroUsuario(
-                              _controladorCampoNome.text,
-                              _controladorCampoUsername.text,
-                              _controladorCampoCpf.text,
-                              _controladorCampoDataNasc.text,
-                              _controladorCampoTelefone.text,
-                              _controladorCampoEmail.text,
-                              _controladorCampoEndereco.text,
-                              _controladorCampoSenha.text,
-                              _controladorCampoConfSenha.text);
-                          //validaCadastro(cadastro);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CadastroPage2(),
-                            ),
-                          );
-                        }
+                        cadastro = CadastroUsuario(
+                            _controladorCampoNome.text,
+                            _controladorCampoUsername.text,
+                            _controladorCampoCpf.text,
+                            _controladorCampoDataNasc.text,
+                            _controladorCampoTelefone.text,
+                            _controladorCampoEmail.text,
+                            _controladorCampoEndereco.text,
+                            _controladorCampoSenha.text,
+                            _controladorCampoConfSenha.text);
+                        _criaCadastro(cadastro, context);
                       },
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
@@ -301,6 +198,39 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
         ),
       ),
     );
+  }
+
+  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
+    var formValid = _formKey.currentState?.validate() ?? false;
+    if (formValid) {
+      //validaCadastro(cadastro);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CadastroPage2(),
+        ),
+      );
+    }
+  }
+}
+
+class CadastroUsuario {
+  final String Nome;
+  final String Username;
+  final String Cpf;
+  final String DataNasc;
+  final String Telefone;
+  final String Email;
+  final String Endereco;
+  final String senha;
+  final String Confsenha;
+
+  CadastroUsuario(this.Nome, this.Username, this.Cpf, this.DataNasc,
+      this.Telefone, this.Email, this.Endereco, this.senha, this.Confsenha);
+
+  @override
+  String toString() {
+    return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
   }
 }
 
@@ -336,6 +266,87 @@ class CampoPreenchimento extends StatelessWidget {
       validator: Validatorless.multiple([
         Validatorless.required("Campo requerido"),
       ]),
+    );
+  }
+}
+
+class CamposSenhas extends StatefulWidget {
+  final TextEditingController controlador;
+  final String rotulo;
+  const CamposSenhas(
+      {Key? key, required this.controlador, required this.rotulo})
+      : super(key: key);
+
+  @override
+  State<CamposSenhas> createState() => _CamposSenhasState(controlador, rotulo);
+}
+
+class _CamposSenhasState extends State<CamposSenhas> {
+  bool _mostrarSenha = false;
+  final TextEditingController controlador;
+  final String rotulo;
+
+  _CamposSenhasState(this.controlador, this.rotulo);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controlador,
+      keyboardType: TextInputType.visiblePassword,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(1.0),
+        labelText: rotulo,
+        prefixIcon: const Icon(Icons.lock),
+        suffixIcon: IconButton(
+          icon: Icon(
+              _mostrarSenha == false ? Icons.visibility_off : Icons.visibility),
+          onPressed: () {
+            setState(() {
+              _mostrarSenha = !_mostrarSenha;
+            });
+          },
+        ),
+        //hintText: "*******",
+        labelStyle: const TextStyle(
+          color: Colors.black38,
+          fontWeight: FontWeight.w400,
+          fontSize: 20,
+        ),
+      ),
+      obscureText: _mostrarSenha == false ? true : false,
+      style: const TextStyle(fontSize: 16),
+      validator: Validatorless.multiple([
+        Validatorless.required("Campo requerido"),
+        Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
+      ]),
+    );
+  }
+}
+
+class LogoTitulo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 78,
+          height: 78,
+          child: Image.asset("assets/texte_cube.jpg"),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        const Text(
+          "Tela de Cadastro Responsável",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            //fontWeight: FontWeight.bold,
+            color: Colors.black87,
+            fontSize: 25,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
     );
   }
 }
