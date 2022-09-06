@@ -15,9 +15,6 @@ class CadastroRefatorada extends StatefulWidget {
 }
 
 class _CadastroRefatorada extends State<CadastroRefatorada> {
-  bool _mostrarSenha = false;
-  bool _mostrarConfSenha = false;
-
   final _formKey = GlobalKey<FormState>();
 
   final _controladorCampoNome = TextEditingController();
@@ -44,39 +41,8 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
     super.dispose();
   }
 
-  Future<http.Response> realizaCadastro(CadastroUsuario cadastro) async {
-    var headers = {'Content-Type': 'Application/json'};
-
-    var cadastroJson = jsonEncode({
-      "username": cadastro.Username,
-      "Email": cadastro.Email,
-      "Password": cadastro.senha,
-      "RePassword": cadastro.Confsenha,
-      "Nome": cadastro.Nome,
-      "Cpf": cadastro.Cpf,
-      "DataNascimento": cadastro.DataNasc,
-      "Telefone": cadastro.Telefone,
-      "Endereco": cadastro.Endereco
-    });
-    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
-    var response = await http.post(url, headers: headers, body: cadastroJson);
-
-    return response;
-  }
-
   @override
   Widget build(BuildContext context) {
-    CadastroUsuario cadastro;
-
-    void validaCadastro(CadastroUsuario cadastro) async {
-      var response = await realizaCadastro(cadastro);
-      if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
-      } else {
-        print(response.body);
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -140,6 +106,14 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                 const SizedBox(
                   height: 10,
                 ),
+                CampoPreenchimento(
+                    controlador: _controladorCampoEndereco,
+                    rotulo: 'Endereço',
+                    dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
+                    icone: Icons.email),
+                const SizedBox(
+                  height: 10,
+                ),
                 CamposSenhas(
                   controlador: _controladorCampoSenha,
                   rotulo: 'Senha',
@@ -153,42 +127,16 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                 const SizedBox(
                   height: 25,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        cadastro = CadastroUsuario(
-                            _controladorCampoNome.text,
-                            _controladorCampoUsername.text,
-                            _controladorCampoCpf.text,
-                            _controladorCampoDataNasc.text,
-                            _controladorCampoTelefone.text,
-                            _controladorCampoEmail.text,
-                            _controladorCampoEndereco.text,
-                            _controladorCampoSenha.text,
-                            _controladorCampoConfSenha.text);
-                        _criaCadastro(cadastro, context);
-                      },
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(18)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.indigo),
-                        shape: MaterialStateProperty.all<CircleBorder>(
-                            const CircleBorder(
-                                //borderRadius: BorderRadius.circular(100),
-                                //side: BorderSide(color: Colors.indigo)
-                                )),
-                      ),
-                      child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset("assets/down_arrow.png"),
-                      ),
-                    ),
-                  ],
-                ),
+                botaoFinalizaCadastro(
+                    controladorCampoNome: _controladorCampoNome,
+                    controladorCampoUsername: _controladorCampoUsername,
+                    controladorCampoCpf: _controladorCampoCpf,
+                    controladorCampoDataNasc: _controladorCampoDataNasc,
+                    controladorCampoTelefone: _controladorCampoTelefone,
+                    controladorCampoEmail: _controladorCampoEmail,
+                    controladorCampoEndereco: _controladorCampoEndereco,
+                    controladorCampoSenha: _controladorCampoSenha,
+                    controladorCampoConfSenha: _controladorCampoConfSenha),
                 const SizedBox(
                   height: 25,
                 ),
@@ -198,19 +146,6 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
         ),
       ),
     );
-  }
-
-  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
-    var formValid = _formKey.currentState?.validate() ?? false;
-    if (formValid) {
-      //validaCadastro(cadastro);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const CadastroPage2(),
-        ),
-      );
-    }
   }
 }
 
@@ -231,6 +166,34 @@ class CadastroUsuario {
   @override
   String toString() {
     return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
+  }
+}
+
+class LogoTitulo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 78,
+          height: 78,
+          child: Image.asset("assets/texte_cube.jpg"),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        const Text(
+          "Tela de Cadastro Responsável",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            //fontWeight: FontWeight.bold,
+            color: Colors.black87,
+            fontSize: 25,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -323,30 +286,105 @@ class _CamposSenhasState extends State<CamposSenhas> {
   }
 }
 
-class LogoTitulo extends StatelessWidget {
+class botaoFinalizaCadastro extends StatelessWidget {
+  final TextEditingController controladorCampoNome;
+  final TextEditingController controladorCampoUsername;
+  final TextEditingController controladorCampoCpf;
+  final TextEditingController controladorCampoDataNasc;
+  final TextEditingController controladorCampoTelefone;
+  final TextEditingController controladorCampoEmail;
+  final TextEditingController controladorCampoEndereco;
+  final TextEditingController controladorCampoSenha;
+  final TextEditingController controladorCampoConfSenha;
+
+  const botaoFinalizaCadastro(
+      {super.key,
+      required this.controladorCampoNome,
+      required this.controladorCampoUsername,
+      required this.controladorCampoCpf,
+      required this.controladorCampoDataNasc,
+      required this.controladorCampoTelefone,
+      required this.controladorCampoEmail,
+      required this.controladorCampoEndereco,
+      required this.controladorCampoSenha,
+      required this.controladorCampoConfSenha});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          width: 78,
-          height: 78,
-          child: Image.asset("assets/texte_cube.jpg"),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const Text(
-          "Tela de Cadastro Responsável",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            //fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            fontSize: 25,
-            fontStyle: FontStyle.italic,
+        TextButton(
+          onPressed: () {
+            if (true) {
+              CadastroUsuario cadastro = CadastroUsuario(
+                  controladorCampoNome.text,
+                  controladorCampoUsername.text,
+                  controladorCampoCpf.text,
+                  controladorCampoDataNasc.text,
+                  controladorCampoTelefone.text,
+                  controladorCampoEmail.text,
+                  controladorCampoEndereco.text,
+                  controladorCampoSenha.text,
+                  controladorCampoConfSenha.text);
+              _criaCadastro(cadastro, context);
+            }
+          },
+          style: ButtonStyle(
+            padding:
+                MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(18)),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
+            shape: MaterialStateProperty.all<CircleBorder>(const CircleBorder(
+                //borderRadius: BorderRadius.circular(100),
+                //side: BorderSide(color: Colors.indigo)
+                )),
+          ),
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: Image.asset("assets/down_arrow.png"),
           ),
         ),
       ],
     );
+  }
+
+  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
+    //validaCadastro(cadastro);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CadastroPage2(),
+      ),
+    );
+  }
+
+  void validaCadastro(CadastroUsuario cadastro) async {
+    var response = await realizaCadastro(cadastro);
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+    } else {
+      print(response.body);
+    }
+  }
+
+  Future<http.Response> realizaCadastro(CadastroUsuario cadastro) async {
+    var headers = {'Content-Type': 'Application/json'};
+
+    var cadastroJson = jsonEncode({
+      "username": cadastro.Username,
+      "Email": cadastro.Email,
+      "Password": cadastro.senha,
+      "RePassword": cadastro.Confsenha,
+      "Nome": cadastro.Nome,
+      "Cpf": cadastro.Cpf,
+      "DataNascimento": cadastro.DataNasc,
+      "Telefone": cadastro.Telefone,
+      "Endereco": cadastro.Endereco
+    });
+    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
+    var response = await http.post(url, headers: headers, body: cadastroJson);
+
+    return response;
   }
 }

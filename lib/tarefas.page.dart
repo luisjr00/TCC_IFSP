@@ -31,40 +31,46 @@ class TarefasPage extends StatelessWidget {
         leading: const Icon(Icons.calendar_today),
       ),
       body: FutureBuilder<List>(
-          future: pegarTarefas(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Erro ao carregar tarefas'),
-              );
-            }
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  var tarefa = snapshot.data![index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TarefaPage(tarefa: tarefa),
-                          ),
-                        );
-                      }, // chamar metodo que mostra a tarefa,
-                      leading: const Icon(Icons.calendar_today, size: 50),
-                      title: Text(tarefa['descricao']),
-                      subtitle: Text(tarefa['dataInicio']),
-                    ),
-                  );
-                },
-              );
-            }
+        future: pegarTarefas(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Text('Erro ao carregar tarefas'),
             );
-          }),
+          }
+          if (snapshot.hasData) {
+            if (snapshot.data! == null || snapshot.data!.length == 0) {
+              return const Center(
+                child: Text('Não existe tarefas'),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var tarefa = snapshot.data![index];
+                return Card(
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TarefaPage(tarefa: tarefa),
+                        ),
+                      );
+                    },
+                    leading: const Icon(Icons.calendar_today, size: 50),
+                    title: Text(tarefa['descricao']),
+                    subtitle: Text(tarefa['dataInicio']),
+                  ),
+                );
+              },
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
 }

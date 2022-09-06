@@ -97,8 +97,8 @@ class _LoginPage extends State<LoginPage> {
               controller: _controladorCampoEmail,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.mail),
-                labelText: "Email",
+                prefixIcon: Icon(Icons.person),
+                labelText: "Username",
                 labelStyle: TextStyle(
                   color: Colors.black38,
                   fontWeight: FontWeight.w400,
