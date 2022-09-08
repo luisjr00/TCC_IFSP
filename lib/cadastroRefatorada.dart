@@ -41,6 +41,91 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
     super.dispose();
   }
 
+  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
+    //validaCadastro(cadastro);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CadastroPage2(),
+      ),
+    );
+  }
+
+  void validaCadastro(CadastroUsuario cadastro) async {
+    var response = await realizaCadastro(cadastro);
+    var json = jsonDecode(utf8.decode(response.bodyBytes));
+
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CadastroPage2(),
+        ),
+      );
+    } else if (response.statusCode == 500) {
+      Widget okButton = FlatButton(
+        child: const Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("ALERTA"),
+            content: Text(json[0]['message']),
+            actions: [
+              okButton,
+            ],
+          );
+        },
+      );
+    } else {
+      var mensagem = json['errors']['RePassword'].toString();
+      Widget okButton = FlatButton(
+        child: const Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("ALERTA"),
+            content: Text(mensagem),
+            actions: [
+              okButton,
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<http.Response> realizaCadastro(CadastroUsuario cadastro) async {
+    var headers = {'Content-Type': 'Application/json'};
+
+    var cadastroJson = jsonEncode({
+      "username": cadastro.Username,
+      "Email": cadastro.Email,
+      "Password": cadastro.senha,
+      "RePassword": cadastro.Confsenha,
+      "Nome": cadastro.Nome,
+      "Cpf": cadastro.Cpf,
+      "DataNascimento": cadastro.DataNasc,
+      "Telefone": cadastro.Telefone,
+      "Endereco": cadastro.Endereco
+    });
+    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
+    var response = await http.post(url, headers: headers, body: cadastroJson);
+
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,16 +212,46 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                 const SizedBox(
                   height: 25,
                 ),
-                botaoFinalizaCadastro(
-                    controladorCampoNome: _controladorCampoNome,
-                    controladorCampoUsername: _controladorCampoUsername,
-                    controladorCampoCpf: _controladorCampoCpf,
-                    controladorCampoDataNasc: _controladorCampoDataNasc,
-                    controladorCampoTelefone: _controladorCampoTelefone,
-                    controladorCampoEmail: _controladorCampoEmail,
-                    controladorCampoEndereco: _controladorCampoEndereco,
-                    controladorCampoSenha: _controladorCampoSenha,
-                    controladorCampoConfSenha: _controladorCampoConfSenha),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        var formValid =
+                            _formKey.currentState?.validate() ?? false;
+                        if (formValid) {
+                          var cadastro = CadastroUsuario(
+                              _controladorCampoNome.text,
+                              _controladorCampoUsername.text,
+                              _controladorCampoCpf.text,
+                              _controladorCampoDataNasc.text,
+                              _controladorCampoTelefone.text,
+                              _controladorCampoEmail.text,
+                              _controladorCampoEndereco.text,
+                              _controladorCampoSenha.text,
+                              _controladorCampoConfSenha.text);
+                          //validaCadastro(cadastro);
+                        }
+                      },
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.all(18)),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.indigo),
+                        shape: MaterialStateProperty.all<CircleBorder>(
+                            const CircleBorder(
+                                //borderRadius: BorderRadius.circular(100),
+                                //side: BorderSide(color: Colors.indigo)
+                                )),
+                      ),
+                      child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Image.asset("assets/down_arrow.png"),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(
                   height: 25,
                 ),
@@ -283,108 +398,5 @@ class _CamposSenhasState extends State<CamposSenhas> {
         Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
       ]),
     );
-  }
-}
-
-class botaoFinalizaCadastro extends StatelessWidget {
-  final TextEditingController controladorCampoNome;
-  final TextEditingController controladorCampoUsername;
-  final TextEditingController controladorCampoCpf;
-  final TextEditingController controladorCampoDataNasc;
-  final TextEditingController controladorCampoTelefone;
-  final TextEditingController controladorCampoEmail;
-  final TextEditingController controladorCampoEndereco;
-  final TextEditingController controladorCampoSenha;
-  final TextEditingController controladorCampoConfSenha;
-
-  const botaoFinalizaCadastro(
-      {super.key,
-      required this.controladorCampoNome,
-      required this.controladorCampoUsername,
-      required this.controladorCampoCpf,
-      required this.controladorCampoDataNasc,
-      required this.controladorCampoTelefone,
-      required this.controladorCampoEmail,
-      required this.controladorCampoEndereco,
-      required this.controladorCampoSenha,
-      required this.controladorCampoConfSenha});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextButton(
-          onPressed: () {
-            if (true) {
-              CadastroUsuario cadastro = CadastroUsuario(
-                  controladorCampoNome.text,
-                  controladorCampoUsername.text,
-                  controladorCampoCpf.text,
-                  controladorCampoDataNasc.text,
-                  controladorCampoTelefone.text,
-                  controladorCampoEmail.text,
-                  controladorCampoEndereco.text,
-                  controladorCampoSenha.text,
-                  controladorCampoConfSenha.text);
-              _criaCadastro(cadastro, context);
-            }
-          },
-          style: ButtonStyle(
-            padding:
-                MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(18)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
-            shape: MaterialStateProperty.all<CircleBorder>(const CircleBorder(
-                //borderRadius: BorderRadius.circular(100),
-                //side: BorderSide(color: Colors.indigo)
-                )),
-          ),
-          child: SizedBox(
-            width: 30,
-            height: 30,
-            child: Image.asset("assets/down_arrow.png"),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
-    //validaCadastro(cadastro);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CadastroPage2(),
-      ),
-    );
-  }
-
-  void validaCadastro(CadastroUsuario cadastro) async {
-    var response = await realizaCadastro(cadastro);
-    if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-    } else {
-      print(response.body);
-    }
-  }
-
-  Future<http.Response> realizaCadastro(CadastroUsuario cadastro) async {
-    var headers = {'Content-Type': 'Application/json'};
-
-    var cadastroJson = jsonEncode({
-      "username": cadastro.Username,
-      "Email": cadastro.Email,
-      "Password": cadastro.senha,
-      "RePassword": cadastro.Confsenha,
-      "Nome": cadastro.Nome,
-      "Cpf": cadastro.Cpf,
-      "DataNascimento": cadastro.DataNasc,
-      "Telefone": cadastro.Telefone,
-      "Endereco": cadastro.Endereco
-    });
-    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
-    var response = await http.post(url, headers: headers, body: cadastroJson);
-
-    return response;
   }
 }

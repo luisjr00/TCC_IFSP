@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Teste TCC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const LoginPage(),
+      home: const CadastroRefatorada(),
     );
   }
 }
