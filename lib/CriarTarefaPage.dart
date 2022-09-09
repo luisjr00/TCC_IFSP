@@ -101,24 +101,70 @@ class _CriarTarefaState extends State<CriarTarefa> {
             const SizedBox(
               height: 25,
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-                elevation: 15,
-              ),
-              child: Text(
-                'CRIAR',
-                style: const TextStyle(
-                  color: Colors.white,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      elevation: 15,
+                    ),
+                    child: const Text(
+                      'CANCELAR',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
-              ),
-              onPressed: () {
-                var tarefa = Tarefa(
-                    controladorCampoDescricao.text,
-                    controladorCampoDataInicio.text,
-                    controladorCampoDataFim.text);
-                _criaTarefa(tarefa);
-              },
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 16.0, 60.0, 16.0),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.yellow,
+                      elevation: 15,
+                    ),
+                    child: const Text(
+                      'LIMPAR',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      controladorCampoDescricao.text = '';
+                      controladorCampoDataInicio.text = '';
+                      controladorCampoDataFim.text = '';
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      elevation: 15,
+                    ),
+                    child: const Text(
+                      'CRIAR',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      var tarefa = Tarefa(
+                          controladorCampoDescricao.text,
+                          controladorCampoDataInicio.text,
+                          controladorCampoDataFim.text);
+                      _criaTarefa(tarefa);
+                    },
+                  ),
+                ),
+              ],
             )
           ],
         ),
