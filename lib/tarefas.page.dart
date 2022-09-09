@@ -61,7 +61,8 @@ class _TarefasPageState extends State<TarefasPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => TarefaPage(tarefa: tarefa),
+                          builder: (context) =>
+                              TarefaPage(tarefa: tarefa, token: token),
                         ),
                       );
                     },

@@ -8,15 +8,17 @@ import 'dart:convert';
 
 class CriarTarefa extends StatefulWidget {
   var token;
-  CriarTarefa({Key? key, required this.token}) : super(key: key);
+  var tarefa = null;
+  CriarTarefa({Key? key, required this.token, this.tarefa}) : super(key: key);
 
   @override
-  State<CriarTarefa> createState() => _CriarTarefaState(token);
+  State<CriarTarefa> createState() => _CriarTarefaState(token, tarefa);
 }
 
 class _CriarTarefaState extends State<CriarTarefa> {
   var token;
-  _CriarTarefaState(this.token);
+  var tarefaUpd = null;
+  _CriarTarefaState(this.token, this.tarefaUpd);
 
   void _criaTarefa(Tarefa tarefa) async {
     var response = await realizaPostTarefa(tarefa);
@@ -24,6 +26,12 @@ class _CriarTarefaState extends State<CriarTarefa> {
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 201) {
+      var snackBar = SnackBar(
+        content: const Text('Tarefa criada com sucesso!'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -71,13 +79,76 @@ class _CriarTarefaState extends State<CriarTarefa> {
     return response;
   }
 
+  void _atualizaTarefa(Tarefa tarefa, String id) async {
+    var response = await realizaPutTarefa(tarefa, id);
+
+    if (response.statusCode == 204) {
+      var snackBar = SnackBar(
+        content: const Text('Tarefa atualizada com sucesso!'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TarefasPage(token: token),
+        ),
+      );
+    } else {
+      Widget okButton = FlatButton(
+        child: const Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("ALERTA"),
+            content: const Text("Erro ao atualizar tarefa"),
+            actions: [
+              okButton,
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<http.Response> realizaPutTarefa(Tarefa tarefa, String id) async {
+    var headers = {
+      'Content-Type': 'Application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    var cadastroJson = jsonEncode({
+      "descricao": tarefa.descricao,
+      "dataInicio": tarefa.dataInicio,
+      "dataFinal": tarefa.dataFim
+    });
+
+    var url =
+        Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa/$id");
+    var response = await http.put(url, headers: headers, body: cadastroJson);
+
+    return response;
+  }
+
   final TextEditingController controladorCampoDescricao =
       TextEditingController();
   final TextEditingController controladorCampoDataInicio =
       TextEditingController();
   final TextEditingController controladorCampoDataFim = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    if (tarefaUpd != null) {
+      controladorCampoDescricao.text = tarefaUpd['descricao'].toString();
+      controladorCampoDataInicio.text = tarefaUpd['dataInicio'].toString();
+      controladorCampoDataFim.text = tarefaUpd['dataFinal'].toString();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Criar tarefa'),
@@ -150,7 +221,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
                       elevation: 15,
                     ),
                     child: const Text(
-                      'CRIAR',
+                      'SALVAR',
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -160,12 +231,17 @@ class _CriarTarefaState extends State<CriarTarefa> {
                           controladorCampoDescricao.text,
                           controladorCampoDataInicio.text,
                           controladorCampoDataFim.text);
-                      _criaTarefa(tarefa);
+
+                      if (tarefaUpd != null) {
+                        _atualizaTarefa(tarefa, tarefaUpd['id'].toString());
+                      } else {
+                        _criaTarefa(tarefa);
+                      }
                     },
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
