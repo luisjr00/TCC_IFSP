@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cadastro.page1.dart';
+import 'package:flutter_application_1/cadastroRefatorada.dart';
 import 'package:flutter_application_1/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -221,7 +222,7 @@ class _LoginPage extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CadastroPage1(),
+                          builder: (context) => const CadastroRefatorada(),
                         ),
                       );
                     },

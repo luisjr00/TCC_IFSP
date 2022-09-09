@@ -1,19 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/CriarTarefaPage.dart';
 import 'package:flutter_application_1/tarefa.page.dart';
 import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
-class TarefasPage extends StatelessWidget {
-  // ignore: prefer_typing_uninitialized_variables
-  var token;
 
-  TarefasPage({Key? key, required this.token}) : super(key: key);
+class TarefasPage extends StatefulWidget {
+  var token;
+  TarefasPage({Key? key, required this.token});
+
+  @override
+  State<TarefasPage> createState() => _TarefasPageState(token);
+}
+
+class _TarefasPageState extends State<TarefasPage> {
+  var token;
+  _TarefasPageState(this.token);
 
   Future<List> pegarTarefas() async {
     var headers = {'Authorization': 'Bearer $token'};
-
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
     var response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -27,7 +34,7 @@ class TarefasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tarefas"),
+        title: Text('Tarefas'),
         leading: const Icon(Icons.calendar_today),
       ),
       body: FutureBuilder<List>(
@@ -71,6 +78,62 @@ class TarefasPage extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CriarTarefa(token: token),
+            ),
+          );
+        },
+        tooltip: 'Criar tarefa',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Future<List> pegarTarefas() async {
+  //   var headers = {'Authorization': 'Bearer $token'};
+
+  //   var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
+  //   var response = await http.get(url, headers: headers);
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(utf8.decode(response.bodyBytes));
+  //   } else {
+  //     throw Exception("Erro ao carregar tarefas");
+  //   }
+  // }
+
+  // if (snapshot.data! == null || snapshot.data!.length == 0) {
+  //             return const Center(
+  //               child: Text('Não existe tarefas'),
+  //             );
+  //           }

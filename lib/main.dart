@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/CriarTarefaPage.dart';
 import 'package:flutter_application_1/cadastro.page1.dart';
 import 'package:flutter_application_1/cadastroRefatorada.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Teste TCC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const CadastroRefatorada(),
+      home: const LoginPage(),
     );
   }
 }

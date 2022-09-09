@@ -8,17 +8,20 @@ class TarefaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(tarefa['descricao'])),
-        body: Center(
-            child: SingleChildScrollView(
-                child: Column(
-          children: [
-            Text(tarefa['descricao']),
-            Text(tarefa['dataInicio']),
-            Text(tarefa['dataFinal']),
-            Text(tarefa['responsavelId'].toString()),
-            Text(tarefa['idosoId'].toString()),
-          ],
-        ))));
+      appBar: AppBar(title: Text(tarefa['descricao'])),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(tarefa['descricao']),
+              Text(tarefa['dataInicio']),
+              Text(tarefa['dataFinal']),
+              Text(tarefa['responsavelId'].toString()),
+              Text(tarefa['idosoId'].toString()),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

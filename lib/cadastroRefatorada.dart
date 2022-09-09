@@ -41,17 +41,7 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
     super.dispose();
   }
 
-  void _criaCadastro(CadastroUsuario cadastro, BuildContext context) {
-    //validaCadastro(cadastro);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CadastroPage2(),
-      ),
-    );
-  }
-
-  void validaCadastro(CadastroUsuario cadastro) async {
+  void _criaCadastro(CadastroUsuario cadastro) async {
     var response = await realizaCadastro(cadastro);
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -230,7 +220,7 @@ class _CadastroRefatorada extends State<CadastroRefatorada> {
                               _controladorCampoEndereco.text,
                               _controladorCampoSenha.text,
                               _controladorCampoConfSenha.text);
-                          //validaCadastro(cadastro);
+                          //_criaCadastro(cadastro);
                         }
                       },
                       style: ButtonStyle(
