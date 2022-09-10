@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/SolicitaResetSenhaPage.dart';
 import 'package:flutter_application_1/cadastro.page1.dart';
 import 'package:flutter_application_1/tarefas.page.dart';
 import 'package:http/http.dart' as http;
@@ -150,69 +151,68 @@ class _LoginPage extends State<LoginPage> {
                   "Esqueceu a senha ?",
                   textAlign: TextAlign.right,
                 ),
-                onPressed:
-                    () {}, /*
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ResetPasswordPage(),
-                      ),
-                    );
-                */
+                      builder: (context) => SolitaResetSenha(),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(
               height: 50,
             ),
             Container(
-            height: 60,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(5),
+              height: 60,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: const [0.3, 1],
+                  colors: [
+                    Colors.blue[900]!,
+                    Colors.blue,
+                  ],
+                ),
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: const [0.3, 1],
-                colors: [
-                  Colors.blue[900]!,
-                  Colors.blue,
-                ],
+              child: SizedBox.expand(
+                child: TextButton(
+                    child: AnimatedBuilder(
+                        animation: loading,
+                        builder: (context, _) {
+                          return loading.value
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  "Login",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                );
+                        }),
+                    onPressed: () => {
+                          loading.value = !loading.value,
+                          login = Login(_controladorCampoEmail.text,
+                              _controladorCampoSenha.text),
+                          realizaLogin(login),
+                        } // chamar o metodo que vai conexão com a api e validar o login
+                    ),
               ),
             ),
-            child: SizedBox.expand(
-              child: TextButton(
-                  child: AnimatedBuilder(
-                    animation: loading,
-                    builder: (context, _) {
-                      return loading.value
-                      ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      )
-                      : const Text("Login",
-                      textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      );
-                    }
-                  ),
-                  onPressed: () => {
-                    loading.value = !loading.value,
-                        login = Login(_controladorCampoEmail.text,
-                            _controladorCampoSenha.text),
-                        realizaLogin(login),
-                      } // chamar o metodo que vai conexão com a api e validar o login
-                  ),
-            ),
-          ),
             const SizedBox(
               height: 70,
             ),

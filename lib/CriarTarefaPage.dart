@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/tarefas.page.dart';
+import 'package:intl/intl.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -151,7 +152,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar tarefa'),
+        title: const Text('Criar tarefa'),
       ),
       body: Center(
         child: Column(
@@ -161,14 +162,14 @@ class _CriarTarefaState extends State<CriarTarefa> {
                 controlador: controladorCampoDescricao,
                 rotulo: 'Descrição',
                 dica: 'Ex. Dar comida para o rex'),
-            CampoPreenchimento(
-                controlador: controladorCampoDataInicio,
-                rotulo: 'Date inicio',
-                dica: 'Ex. dd/mm/aaaa - difinição padrao (dia atual)'),
-            CampoPreenchimento(
-                controlador: controladorCampoDataFim,
-                rotulo: 'Data final',
-                dica: 'Ex. dd/mm/aaaa - difinição padrao (5 dias)'),
+            CampoData(
+              controlador: controladorCampoDataInicio,
+              rotulo: 'Data inicio',
+            ),
+            CampoData(
+              controlador: controladorCampoDataFim,
+              rotulo: 'Data final',
+            ),
             const SizedBox(
               height: 25,
             ),
@@ -271,7 +272,7 @@ class CampoPreenchimento extends StatelessWidget {
         prefixIcon: Icon(icone),
         labelText: rotulo,
         hintText: dica != null ? dica : null,
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,
           fontSize: 20,
@@ -281,6 +282,61 @@ class CampoPreenchimento extends StatelessWidget {
       validator: Validatorless.multiple([
         Validatorless.required("Campo requerido"),
       ]),
+    );
+  }
+}
+
+class CampoData extends StatefulWidget {
+  final TextEditingController controlador;
+  final String rotulo;
+
+  const CampoData({Key? key, required this.controlador, required this.rotulo})
+      : super(key: key);
+
+  @override
+  State<CampoData> createState() => _CampoDataState(controlador, rotulo);
+}
+
+class _CampoDataState extends State<CampoData> {
+  final TextEditingController controlador;
+  final String rotulo;
+
+  _CampoDataState(this.controlador, this.rotulo);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controlador,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.calendar_month),
+        labelText: rotulo,
+        labelStyle: const TextStyle(
+          color: Colors.black38,
+          fontWeight: FontWeight.w400,
+          fontSize: 20,
+        ),
+      ),
+      style: const TextStyle(fontSize: 20),
+      validator: Validatorless.multiple(
+        [
+          Validatorless.required("Campo requerido"),
+        ],
+      ),
+      onTap: () async {
+        DateTime? pickeddate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+          locale: const Locale("pt", "BR"),
+        );
+
+        if (pickeddate != null) {
+          setState(() {
+            controlador.text = DateFormat('dd/MM/yyyy').format(pickeddate);
+          });
+        }
+      },
     );
   }
 }

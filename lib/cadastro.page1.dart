@@ -139,7 +139,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                LogoTitulo(),
+                const LogoTitulo(),
                 const SizedBox(
                   height: 15,
                 ),
@@ -158,37 +158,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
                 const SizedBox(
                   height: 10,
                 ),
-                TextFormField(
-                  controller: _controladorCampoDataNasc,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_month),
-                    labelText: "Data de Nascimento",
-                    labelStyle: TextStyle(
-                      color: Colors.black38,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 20,
-                    ),
-                  ),
-                  style: const TextStyle(fontSize: 20),
-                  validator: Validatorless.multiple([
-                    Validatorless.required("Campo requerido"),
-                  ]),
-                  onTap: () async {
-                    DateTime? pickeddate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100),
-                        locale: const Locale("pt", "BR"),);
-
-                        if (pickeddate != null) {
-                          setState(() {
-                            _controladorCampoDataNasc.text = DateFormat('dd/MM/yyyy').format(pickeddate);
-                          });
-
-                        }
-                  },
-                ),
+                CampoData(controlador: _controladorCampoDataNasc),
                 const SizedBox(
                   height: 10,
                 ),
@@ -416,6 +386,55 @@ class _CamposSenhasState extends State<CamposSenhas> {
         Validatorless.required("Campo requerido"),
         Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
       ]),
+    );
+  }
+}
+
+class CampoData extends StatefulWidget {
+  final TextEditingController controlador;
+  const CampoData({Key? key, required this.controlador}) : super(key: key);
+
+  @override
+  State<CampoData> createState() => _CampoDataState(controlador);
+}
+
+class _CampoDataState extends State<CampoData> {
+  TextEditingController controlador;
+
+  _CampoDataState(this.controlador);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controlador,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.calendar_month),
+        labelText: "Data de Nascimento",
+        labelStyle: TextStyle(
+          color: Colors.black38,
+          fontWeight: FontWeight.w400,
+          fontSize: 20,
+        ),
+      ),
+      style: const TextStyle(fontSize: 20),
+      validator: Validatorless.multiple([
+        Validatorless.required("Campo requerido"),
+      ]),
+      onTap: () async {
+        DateTime? pickeddate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+          locale: const Locale("pt", "BR"),
+        );
+
+        if (pickeddate != null) {
+          setState(() {
+            controlador.text = DateFormat('dd/MM/yyyy').format(pickeddate);
+          });
+        }
+      },
     );
   }
 }
