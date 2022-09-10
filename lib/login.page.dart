@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cadastro.page1.dart';
-import 'package:flutter_application_1/cadastroRefatorada.dart';
 import 'package:flutter_application_1/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,6 +26,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   bool _mostrarSenha = true;
+  final loading = ValueNotifier<bool>(false);
 
   Future<http.Response> buscaLoginApi(String login, String senha) async {
     var headers = {'Content-Type': 'Application/json'};
@@ -55,6 +55,7 @@ class _LoginPage extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => TarefasPage(token: token)),
         );
       } else {
+        loading.value = !loading.value;
         Widget okButton = FlatButton(
           child: const Text("OK"),
           onPressed: () {
@@ -164,47 +165,54 @@ class _LoginPage extends State<LoginPage> {
               height: 50,
             ),
             Container(
-              height: 60,
-              width: 20,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [0.3, 1],
-                  colors: [
-                    Colors.blue[900]!,
-                    Colors.blue,
-                  ],
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                ),
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
               ),
-              child: SizedBox.expand(
-                child: TextButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const <Widget>[
-                        Text(
-                          "Login",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                    onPressed: () => {
-                          login = Login(_controladorCampoEmail.text,
-                              _controladorCampoSenha.text),
-                          realizaLogin(login),
-                        } // chamar o metodo que vai conexão com a api e validar o login
-                    ),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: const [0.3, 1],
+                colors: [
+                  Colors.blue[900]!,
+                  Colors.blue,
+                ],
               ),
             ),
+            child: SizedBox.expand(
+              child: TextButton(
+                  child: AnimatedBuilder(
+                    animation: loading,
+                    builder: (context, _) {
+                      return loading.value
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      )
+                      : const Text("Login",
+                      textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      );
+                    }
+                  ),
+                  onPressed: () => {
+                    loading.value = !loading.value,
+                        login = Login(_controladorCampoEmail.text,
+                            _controladorCampoSenha.text),
+                        realizaLogin(login),
+                      } // chamar o metodo que vai conexão com a api e validar o login
+                  ),
+            ),
+          ),
             const SizedBox(
               height: 70,
             ),
@@ -222,7 +230,7 @@ class _LoginPage extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CadastroRefatorada(),
+                          builder: (context) => const CadastroPage1(),
                         ),
                       );
                     },
@@ -246,3 +254,68 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 }
+
+/*
+class BotaoCarregando extends StatelessWidget {
+  final loading = ValueNotifier<bool>(false);
+
+  BotaoCarregando({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [ Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: const [0.3, 1],
+                colors: [
+                  Colors.blue[900]!,
+                  Colors.blue,
+                ],
+              ),
+            ),
+            child: SizedBox.expand(
+              child: TextButton(
+                  child: AnimatedBuilder(
+                    animation: loading,
+                    builder: (context, _) {
+                      return loading.value
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      )
+                      : const Text("Login",
+                      textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      );
+                    }
+                  ),
+                  onPressed: () => {
+                    loading.value = !loading.value,
+                        login = Login(_controladorCampoEmail.text,
+                            _controladorCampoSenha.text),
+                        realizaLogin(login),
+                      } // chamar o metodo que vai conexão com a api e validar o login
+                  ),
+            ),
+          )),
+      ],
+    );
+  }
+}*/
