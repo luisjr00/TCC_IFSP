@@ -30,6 +30,8 @@ dependencies:
   flutter:
     sdk: flutter
   validatorless: ^1.0.0
+  syncfusion_flutter_calendar: ^18.4.46
+
 
   flutter_localizations: 
     sdk: flutter
