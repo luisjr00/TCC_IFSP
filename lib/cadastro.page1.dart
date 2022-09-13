@@ -182,7 +182,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
                     controlador: _controladorCampoEndereco,
                     rotulo: 'Endereço',
                     dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
-                    icone: Icons.email),
+                    icone: Icons.home),
                 const SizedBox(
                   height: 10,
                 ),
@@ -206,7 +206,13 @@ class _CadastroPage1 extends State<CadastroPage1> {
                       onPressed: () {
                         var formValid =
                             _formKey.currentState?.validate() ?? false;
-                        if (formValid) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CadastroPage2(),
+                          ),
+                        );
+                        /*if (formValid) {
                           var cadastro = CadastroUsuario(
                               _controladorCampoNome.text,
                               _controladorCampoUsername.text,
@@ -217,8 +223,8 @@ class _CadastroPage1 extends State<CadastroPage1> {
                               _controladorCampoEndereco.text,
                               _controladorCampoSenha.text,
                               _controladorCampoConfSenha.text);
-                          _criaCadastro(cadastro);
-                        }
+                          //_criaCadastro(cadastro);
+                        }*/
                       },
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
@@ -287,12 +293,25 @@ class LogoTitulo extends StatelessWidget {
           height: 5,
         ),
         const Text(
-          "Tela de Cadastro Responsável",
+          "Tela de Cadastro",
           textAlign: TextAlign.center,
           style: TextStyle(
             //fontWeight: FontWeight.bold,
             color: Colors.black87,
             fontSize: 25,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        const Text(
+          "Responsável",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            //fontWeight: FontWeight.bold,
+            color: Colors.black87,
+            fontSize: 20,
             fontStyle: FontStyle.italic,
           ),
         ),
