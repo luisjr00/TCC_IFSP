@@ -123,16 +123,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        ),
-        ),
+        leading: const Icon(null),
       ),
       body: Container(
         //color: Colors.white,
@@ -157,25 +148,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
                       onPressed: () {
                         var formValid =
                             _formKey.currentState?.validate() ?? false;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CadastroPage1(),
-                          ),
-                        );
-                        /*if (formValid) {
-                          var cadastro = CadastroUsuario(
-                              _controladorCampoNome.text,
-                              _controladorCampoUsername.text,
-                              _controladorCampoCpf.text,
-                              _controladorCampoDataNasc.text,
-                              _controladorCampoTelefone.text,
-                              _controladorCampoEmail.text,
-                              _controladorCampoEndereco.text,
-                              _controladorCampoSenha.text,
-                              _controladorCampoConfSenha.text);
-                          //_criaCadastro(cadastro);
-                        }*/
+                        Navigator.pop(context);
                       },
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
@@ -248,51 +221,51 @@ class _CadastroPage2 extends State<CadastroPage2> {
                   height: 40,
                 ),
                 Container(
-              height: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [0.3, 1],
-                  colors: [
-                    Colors.blue[900]!,
-                    Colors.blue,
-                  ],
-                ),
-              ),
-              child: SizedBox.expand(
-                child: TextButton(
-                    child: AnimatedBuilder(
-                        animation: loading,
-                        builder: (context, _) {
-                          return loading.value
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  "Cadastrar Dados",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                );
-                        }),
-                    onPressed: () => {
-                          loading.value = !loading.value,
-                        } // chamar o metodo que vai conexão com a api e validar o login
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
                     ),
-              ),
-            ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: const [0.3, 1],
+                      colors: [
+                        Colors.blue[900]!,
+                        Colors.blue,
+                      ],
+                    ),
+                  ),
+                  child: SizedBox.expand(
+                    child: TextButton(
+                        child: AnimatedBuilder(
+                            animation: loading,
+                            builder: (context, _) {
+                              return loading.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Cadastrar Dados",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    );
+                            }),
+                        onPressed: () => {
+                              loading.value = !loading.value,
+                            } // chamar o metodo que vai conexão com a api e validar o login
+                        ),
+                  ),
+                ),
                 const SizedBox(
                   height: 25,
                 ),
@@ -341,7 +314,7 @@ class LogoTitulo extends StatelessWidget {
           height: 5,
         ),
         const Text(
-          "Tela de Cadastro",
+          "Cadastro",
           textAlign: TextAlign.center,
           style: TextStyle(
             //fontWeight: FontWeight.bold,
@@ -477,6 +450,7 @@ class _CampoDataState extends State<CampoData> {
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.calendar_month),
         labelText: "Data de Nascimento",
+        hintText: 'dd/mm/aaaa',
         labelStyle: TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,

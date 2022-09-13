@@ -293,7 +293,7 @@ class LogoTitulo extends StatelessWidget {
           height: 5,
         ),
         const Text(
-          "Tela de Cadastro",
+          "Cadastro",
           textAlign: TextAlign.center,
           style: TextStyle(
             //fontWeight: FontWeight.bold,
@@ -429,6 +429,7 @@ class _CampoDataState extends State<CampoData> {
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.calendar_month),
         labelText: "Data de Nascimento",
+        hintText: 'dd/mm/aaaa',
         labelStyle: TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,
