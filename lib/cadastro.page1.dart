@@ -47,12 +47,17 @@ class _CadastroPage1 extends State<CadastroPage1> {
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
+      var code = json[0]['message'];
+      var snackBar = SnackBar(
+        content: const Text('Cadastro do responsavel realizado com sucesso!'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const CadastroPage2(),
+          builder: (context) => CadastroPage2(code: code),
         ),
       );
     } else if (response.statusCode == 500) {
@@ -206,13 +211,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
                       onPressed: () {
                         var formValid =
                             _formKey.currentState?.validate() ?? false;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CadastroPage2(),
-                          ),
-                        );
-                        /*if (formValid) {
+                        if (formValid) {
                           var cadastro = CadastroUsuario(
                               _controladorCampoNome.text,
                               _controladorCampoUsername.text,
@@ -223,8 +222,8 @@ class _CadastroPage1 extends State<CadastroPage1> {
                               _controladorCampoEndereco.text,
                               _controladorCampoSenha.text,
                               _controladorCampoConfSenha.text);
-                          //_criaCadastro(cadastro);
-                        }*/
+                          _criaCadastro(cadastro);
+                        }
                       },
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(

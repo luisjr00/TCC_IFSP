@@ -5,18 +5,23 @@ import 'package:flutter_application_1/login.page.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:validatorless/validatorless.dart';
-import 'cadastro.page1.dart';
 import 'dart:convert';
 
 // ignore: must_be_immutable
 class CadastroPage2 extends StatefulWidget {
-  const CadastroPage2({Key? key}) : super(key: key);
+  String code;
+  CadastroPage2({Key? key, required this.code}) : super(key: key);
 
   @override
-  State<CadastroPage2> createState() => _CadastroPage2();
+  // ignore: no_logic_in_create_state
+  State<CadastroPage2> createState() => _CadastroPage2(code);
 }
 
 class _CadastroPage2 extends State<CadastroPage2> {
+  String code;
+
+  _CadastroPage2(this.code);
+
   final _formKey = GlobalKey<FormState>();
   final loading = ValueNotifier<bool>(false);
 
@@ -25,7 +30,6 @@ class _CadastroPage2 extends State<CadastroPage2> {
   final _controladorCampoCpf = TextEditingController();
   final _controladorCampoDataNasc = TextEditingController();
   final _controladorCampoTelefone = TextEditingController();
-  final _controladorCampoEmail = TextEditingController();
   final _controladorCampoEndereco = TextEditingController();
   final _controladorCampoSenha = TextEditingController();
   final _controladorCampoConfSenha = TextEditingController();
@@ -37,11 +41,18 @@ class _CadastroPage2 extends State<CadastroPage2> {
     _controladorCampoCpf.dispose();
     _controladorCampoDataNasc.dispose();
     _controladorCampoTelefone.dispose();
-    _controladorCampoEmail.dispose();
     _controladorCampoEndereco.dispose();
     _controladorCampoSenha.dispose();
     _controladorCampoConfSenha.dispose();
     super.dispose();
+  }
+
+  int _extraiResponsavelId(String code) {
+    int id = 0;
+    int inicio = code.length - 5;
+    var result = code.substring(inicio);
+    id = int.tryParse(result.toString())!;
+    return id;
   }
 
   void _criaCadastro(CadastroUsuario cadastro) async {
@@ -49,12 +60,16 @@ class _CadastroPage2 extends State<CadastroPage2> {
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
+      var snackBar = SnackBar(
+        content: const Text('Cadastro do assistido realizado com sucesso!'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const CadastroPage1(),
+          builder: (context) => const LoginPage(),
         ),
       );
     } else if (response.statusCode == 500) {
@@ -104,16 +119,17 @@ class _CadastroPage2 extends State<CadastroPage2> {
 
     var cadastroJson = jsonEncode({
       "username": cadastro.Username,
-      "Email": cadastro.Email,
       "Password": cadastro.senha,
       "RePassword": cadastro.Confsenha,
       "Nome": cadastro.Nome,
       "Cpf": cadastro.Cpf,
       "DataNascimento": cadastro.DataNasc,
       "Telefone": cadastro.Telefone,
-      "Endereco": cadastro.Endereco
+      "Endereco": cadastro.Endereco,
+      "ResponsavelId": cadastro.responsavelId
     });
-    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
+    var url = Uri.parse(
+        "https://app-tcc-amai-producao.herokuapp.com/cadastroassistido");
     var response = await http.post(url, headers: headers, body: cadastroJson);
 
     return response;
@@ -260,9 +276,25 @@ class _CadastroPage2 extends State<CadastroPage2> {
                                       ),
                                     );
                             }),
-                        onPressed: () => {
-                              loading.value = !loading.value,
-                            } // chamar o metodo que vai conexão com a api e validar o login
+                        onPressed: () {
+                          loading.value = !loading.value;
+                          var formValid =
+                              _formKey.currentState?.validate() ?? false;
+                          if (formValid) {
+                            var responsavelId = _extraiResponsavelId(code);
+                            var cadastro = CadastroUsuario(
+                                _controladorCampoNome.text,
+                                _controladorCampoUsername.text,
+                                _controladorCampoCpf.text,
+                                _controladorCampoDataNasc.text,
+                                _controladorCampoTelefone.text,
+                                _controladorCampoEndereco.text,
+                                _controladorCampoSenha.text,
+                                _controladorCampoConfSenha.text,
+                                responsavelId);
+                            _criaCadastro(cadastro);
+                          }
+                        } // chamar o metodo que vai conexão com a api e validar o login
                         ),
                   ),
                 ),
@@ -284,17 +316,25 @@ class CadastroUsuario {
   final String Cpf;
   final String DataNasc;
   final String Telefone;
-  final String Email;
   final String Endereco;
   final String senha;
   final String Confsenha;
+  final int responsavelId;
 
-  CadastroUsuario(this.Nome, this.Username, this.Cpf, this.DataNasc,
-      this.Telefone, this.Email, this.Endereco, this.senha, this.Confsenha);
+  CadastroUsuario(
+      this.Nome,
+      this.Username,
+      this.Cpf,
+      this.DataNasc,
+      this.Telefone,
+      this.Endereco,
+      this.senha,
+      this.Confsenha,
+      this.responsavelId);
 
   @override
   String toString() {
-    return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
+    return '$Username, $Cpf, $DataNasc, $Telefone, $Endereco, $senha, $Confsenha';
   }
 }
 
