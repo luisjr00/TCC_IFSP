@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/CriarTarefaPage.dart';
-import 'package:flutter_application_1/cadastro.page1.dart';
-import 'login.page.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_application_1/screens/login.page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {

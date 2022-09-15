@@ -1,35 +1,31 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/login.page.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:validatorless/validatorless.dart';
+import '../components/CampoData.dart';
+import '../components/CampoPreenchimento.dart';
+import 'cadastro.page2.dart';
 import 'dart:convert';
 
 // ignore: must_be_immutable
-class CadastroPage2 extends StatefulWidget {
-  String code;
-  CadastroPage2({Key? key, required this.code}) : super(key: key);
+class CadastroPage1 extends StatefulWidget {
+  const CadastroPage1({Key? key}) : super(key: key);
 
   @override
-  // ignore: no_logic_in_create_state
-  State<CadastroPage2> createState() => _CadastroPage2(code);
+  State<CadastroPage1> createState() => _CadastroPage1();
 }
 
-class _CadastroPage2 extends State<CadastroPage2> {
-  String code;
-
-  _CadastroPage2(this.code);
-
+class _CadastroPage1 extends State<CadastroPage1> {
   final _formKey = GlobalKey<FormState>();
-  final loading = ValueNotifier<bool>(false);
 
   final _controladorCampoNome = TextEditingController();
   final _controladorCampoUsername = TextEditingController();
   final _controladorCampoCpf = TextEditingController();
   final _controladorCampoDataNasc = TextEditingController();
   final _controladorCampoTelefone = TextEditingController();
+  final _controladorCampoEmail = TextEditingController();
   final _controladorCampoEndereco = TextEditingController();
   final _controladorCampoSenha = TextEditingController();
   final _controladorCampoConfSenha = TextEditingController();
@@ -41,18 +37,11 @@ class _CadastroPage2 extends State<CadastroPage2> {
     _controladorCampoCpf.dispose();
     _controladorCampoDataNasc.dispose();
     _controladorCampoTelefone.dispose();
+    _controladorCampoEmail.dispose();
     _controladorCampoEndereco.dispose();
     _controladorCampoSenha.dispose();
     _controladorCampoConfSenha.dispose();
     super.dispose();
-  }
-
-  int _extraiResponsavelId(String code) {
-    int id = 0;
-    int inicio = code.length - 5;
-    var result = code.substring(inicio);
-    id = int.tryParse(result.toString())!;
-    return id;
   }
 
   void _criaCadastro(CadastroUsuario cadastro) async {
@@ -60,8 +49,9 @@ class _CadastroPage2 extends State<CadastroPage2> {
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
+      var code = json[0]['message'];
       var snackBar = SnackBar(
-        content: const Text('Cadastro do assistido realizado com sucesso!'),
+        content: const Text('Cadastro do responsavel realizado com sucesso!'),
       );
 
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -69,7 +59,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginPage(),
+          builder: (context) => CadastroPage2(code: code),
         ),
       );
     } else if (response.statusCode == 500) {
@@ -119,17 +109,16 @@ class _CadastroPage2 extends State<CadastroPage2> {
 
     var cadastroJson = jsonEncode({
       "username": cadastro.Username,
+      "Email": cadastro.Email,
       "Password": cadastro.senha,
       "RePassword": cadastro.Confsenha,
       "Nome": cadastro.Nome,
       "Cpf": cadastro.Cpf,
       "DataNascimento": cadastro.DataNasc,
       "Telefone": cadastro.Telefone,
-      "Endereco": cadastro.Endereco,
-      "ResponsavelId": cadastro.responsavelId
+      "Endereco": cadastro.Endereco
     });
-    var url = Uri.parse(
-        "https://app-tcc-amai-producao.herokuapp.com/cadastroassistido");
+    var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/cadastro");
     var response = await http.post(url, headers: headers, body: cadastroJson);
 
     return response;
@@ -139,7 +128,11 @@ class _CadastroPage2 extends State<CadastroPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(null),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => Navigator.pop(context, false),
+        ),
       ),
       body: Container(
         //color: Colors.white,
@@ -157,37 +150,6 @@ class _CadastroPage2 extends State<CadastroPage2> {
                 const SizedBox(
                   height: 15,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        var formValid =
-                            _formKey.currentState?.validate() ?? false;
-                        Navigator.pop(context);
-                      },
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(18)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.indigo),
-                        shape: MaterialStateProperty.all<CircleBorder>(
-                            const CircleBorder(
-                                //borderRadius: BorderRadius.circular(100),
-                                //side: BorderSide(color: Colors.indigo)
-                                )),
-                      ),
-                      child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset("assets/up_arrow.png"),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
                 CampoPreenchimento(
                     controlador: _controladorCampoNome,
                     rotulo: 'Nome Completo',
@@ -199,11 +161,15 @@ class _CadastroPage2 extends State<CadastroPage2> {
                 CampoPreenchimento(
                     controlador: _controladorCampoCpf,
                     rotulo: 'CPF',
+                    teclado: TextInputType.number,
                     icone: Icons.pin),
                 const SizedBox(
                   height: 10,
                 ),
-                CampoData(controlador: _controladorCampoDataNasc),
+                CampoData(
+                  controlador: _controladorCampoDataNasc,
+                  rotulo: "Data de Nascimento",
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -211,7 +177,17 @@ class _CadastroPage2 extends State<CadastroPage2> {
                     controlador: _controladorCampoTelefone,
                     rotulo: 'Telefone (fixo ou celular)',
                     dica: '11 99999-9999',
+                    teclado: TextInputType.phone,
                     icone: Icons.phone),
+                const SizedBox(
+                  height: 10,
+                ),
+                CampoPreenchimento(
+                    controlador: _controladorCampoEmail,
+                    rotulo: 'Email',
+                    dica: 'name@example.com',
+                    teclado: TextInputType.emailAddress,
+                    icone: Icons.email),
                 const SizedBox(
                   height: 10,
                 ),
@@ -234,69 +210,47 @@ class _CadastroPage2 extends State<CadastroPage2> {
                     controlador: _controladorCampoConfSenha,
                     rotulo: 'Confirmar Senha'),
                 const SizedBox(
-                  height: 40,
+                  height: 25,
                 ),
-                Container(
-                  height: 50,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        var formValid =
+                            _formKey.currentState?.validate() ?? false;
+                        if (formValid) {
+                          var cadastro = CadastroUsuario(
+                              _controladorCampoNome.text,
+                              _controladorCampoUsername.text,
+                              _controladorCampoCpf.text,
+                              _controladorCampoDataNasc.text,
+                              _controladorCampoTelefone.text,
+                              _controladorCampoEmail.text,
+                              _controladorCampoEndereco.text,
+                              _controladorCampoSenha.text,
+                              _controladorCampoConfSenha.text);
+                          _criaCadastro(cadastro);
+                        }
+                      },
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.all(18)),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.indigo),
+                        shape: MaterialStateProperty.all<CircleBorder>(
+                            const CircleBorder(
+                                //borderRadius: BorderRadius.circular(100),
+                                //side: BorderSide(color: Colors.indigo)
+                                )),
+                      ),
+                      child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Image.asset("assets/down_arrow.png"),
+                      ),
                     ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: const [0.3, 1],
-                      colors: [
-                        Colors.blue[900]!,
-                        Colors.blue,
-                      ],
-                    ),
-                  ),
-                  child: SizedBox.expand(
-                    child: TextButton(
-                        child: AnimatedBuilder(
-                            animation: loading,
-                            builder: (context, _) {
-                              return loading.value
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Text(
-                                      "Cadastrar Dados",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    );
-                            }),
-                        onPressed: () {
-                          var formValid =
-                              _formKey.currentState?.validate() ?? false;
-                          if (formValid) {
-                            var responsavelId = _extraiResponsavelId(code);
-                            var cadastro = CadastroUsuario(
-                                _controladorCampoNome.text,
-                                _controladorCampoUsername.text,
-                                _controladorCampoCpf.text,
-                                _controladorCampoDataNasc.text,
-                                _controladorCampoTelefone.text,
-                                _controladorCampoEndereco.text,
-                                _controladorCampoSenha.text,
-                                _controladorCampoConfSenha.text,
-                                responsavelId);
-                            _criaCadastro(cadastro);
-                            loading.value = !loading.value;
-                          }
-                        } // chamar o metodo que vai conexão com a api e validar o login
-                        ),
-                  ),
+                  ],
                 ),
                 const SizedBox(
                   height: 25,
@@ -316,25 +270,17 @@ class CadastroUsuario {
   final String Cpf;
   final String DataNasc;
   final String Telefone;
+  final String Email;
   final String Endereco;
   final String senha;
   final String Confsenha;
-  final int responsavelId;
 
-  CadastroUsuario(
-      this.Nome,
-      this.Username,
-      this.Cpf,
-      this.DataNasc,
-      this.Telefone,
-      this.Endereco,
-      this.senha,
-      this.Confsenha,
-      this.responsavelId);
+  CadastroUsuario(this.Nome, this.Username, this.Cpf, this.DataNasc,
+      this.Telefone, this.Email, this.Endereco, this.senha, this.Confsenha);
 
   @override
   String toString() {
-    return '$Username, $Cpf, $DataNasc, $Telefone, $Endereco, $senha, $Confsenha';
+    return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
   }
 }
 
@@ -367,7 +313,7 @@ class LogoTitulo extends StatelessWidget {
           height: 5,
         ),
         const Text(
-          "Pessoa Assistida",
+          "Responsável",
           textAlign: TextAlign.center,
           style: TextStyle(
             //fontWeight: FontWeight.bold,
@@ -377,42 +323,6 @@ class LogoTitulo extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class CampoPreenchimento extends StatelessWidget {
-  final TextEditingController controlador;
-  final String rotulo;
-  final String? dica;
-  final IconData icone;
-
-  const CampoPreenchimento(
-      {super.key,
-      required this.controlador,
-      required this.rotulo,
-      this.dica,
-      required this.icone});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icone),
-        labelText: rotulo,
-        hintText: dica != null ? dica : null,
-        labelStyle: TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-      ]),
     );
   }
 }
@@ -466,56 +376,6 @@ class _CamposSenhasState extends State<CamposSenhas> {
         Validatorless.required("Campo requerido"),
         Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
       ]),
-    );
-  }
-}
-
-class CampoData extends StatefulWidget {
-  final TextEditingController controlador;
-  const CampoData({Key? key, required this.controlador}) : super(key: key);
-
-  @override
-  State<CampoData> createState() => _CampoDataState(controlador);
-}
-
-class _CampoDataState extends State<CampoData> {
-  TextEditingController controlador;
-
-  _CampoDataState(this.controlador);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.calendar_month),
-        labelText: "Data de Nascimento",
-        hintText: 'dd/mm/aaaa',
-        labelStyle: TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-      ]),
-      onTap: () async {
-        DateTime? pickeddate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime(2100),
-          locale: const Locale("pt", "BR"),
-        );
-
-        if (pickeddate != null) {
-          setState(() {
-            controlador.text = DateFormat('dd/MM/yyyy').format(pickeddate);
-          });
-        }
-      },
     );
   }
 }

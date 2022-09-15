@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:validatorless/validatorless.dart';
 import 'dart:convert';
 
+import '../components/CampoPreenchimento.dart';
 import 'login.page.dart';
 
 class RealizaReset extends StatelessWidget {
@@ -162,42 +163,6 @@ class camposReset {
   final String token;
 
   camposReset(this.email, this.Password, this.RePassword, this.token);
-}
-
-class CampoPreenchimento extends StatelessWidget {
-  final TextEditingController controlador;
-  final String rotulo;
-  final String? dica;
-  final IconData icone;
-
-  const CampoPreenchimento(
-      {super.key,
-      required this.controlador,
-      required this.rotulo,
-      this.dica,
-      required this.icone});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icone),
-        labelText: rotulo,
-        hintText: dica != null ? dica : null,
-        labelStyle: TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-      ]),
-    );
-  }
 }
 
 class CamposSenhas extends StatefulWidget {

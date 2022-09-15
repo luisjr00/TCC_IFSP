@@ -1,10 +1,11 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/SolicitaResetSenhaPage.dart';
-import 'package:flutter_application_1/cadastro.page1.dart';
-import 'package:flutter_application_1/tarefas.page.dart';
+import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
+
+import 'SolicitaResetSenhaPage.dart';
+import 'cadastro.page1.dart';
 
 class Login {
   final String email;

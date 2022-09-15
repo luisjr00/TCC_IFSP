@@ -3,10 +3,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/RealizaResetPage.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import '../components/CampoPreenchimento.dart';
+import 'RealizaResetPage.dart';
 
 class SolitaResetSenha extends StatefulWidget {
   const SolitaResetSenha({Key? key}) : super(key: key);
@@ -130,42 +132,6 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
             ],
           ),
         ));
-  }
-}
-
-class CampoPreenchimento extends StatelessWidget {
-  final TextEditingController controlador;
-  final String rotulo;
-  final String? dica;
-  final IconData? icone;
-
-  const CampoPreenchimento(
-      {super.key,
-      required this.controlador,
-      required this.rotulo,
-      this.dica,
-      this.icone});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icone),
-        labelText: rotulo,
-        hintText: dica != null ? dica : null,
-        labelStyle: const TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-      ]),
-    );
   }
 }
 
