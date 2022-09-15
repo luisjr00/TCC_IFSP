@@ -94,7 +94,7 @@ class _LoginPage extends State<LoginPage> {
               child: Image.asset("assets/texte_cube.jpg"),
             ),
             const SizedBox(
-              height: 20,
+              height: 100,
             ),
             TextFormField(
               controller: _controladorCampoEmail,

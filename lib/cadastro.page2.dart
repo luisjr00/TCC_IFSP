@@ -277,7 +277,6 @@ class _CadastroPage2 extends State<CadastroPage2> {
                                     );
                             }),
                         onPressed: () {
-                          loading.value = !loading.value;
                           var formValid =
                               _formKey.currentState?.validate() ?? false;
                           if (formValid) {
@@ -293,6 +292,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
                                 _controladorCampoConfSenha.text,
                                 responsavelId);
                             _criaCadastro(cadastro);
+                            loading.value = !loading.value;
                           }
                         } // chamar o metodo que vai conexão com a api e validar o login
                         ),

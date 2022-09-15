@@ -33,6 +33,12 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
     if (response.statusCode == 200) {
       String token = json[0]['message'].toString();
       // ignore: use_build_context_synchronously
+      var snackBar = SnackBar(
+        content: const Text('Email com o codigo de verificação enviado!'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -108,9 +114,17 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
                   ),
                 ),
                 onPressed: () {
-                  var reset = DadosResetSenha();
-                  reset.email = controladorCampoEmail.text;
-                  _solicitaReset(reset);
+                  if (controladorCampoEmail.text.isEmpty) {
+                    var snackBar = SnackBar(
+                      content: const Text('Informe um email!'),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else {
+                    var reset = DadosResetSenha();
+                    reset.email = controladorCampoEmail.text;
+                    _solicitaReset(reset);
+                  }
                 },
               ),
             ],
