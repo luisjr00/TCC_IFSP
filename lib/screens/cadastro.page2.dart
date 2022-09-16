@@ -124,179 +124,158 @@ class _CadastroPage2 extends State<CadastroPage2> {
       appBar: AppBar(
         leading: const Icon(null),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(
-          left: 40,
-          right: 40,
-        ),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: <Widget>[
-              const SizedBox(
-                height: 15,
-              ),
-              LogoTitulo(titulo: "Pessoa Assistida"),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          children: <Widget>[
+            const SizedBox(
+              height: 15,
+            ),
+            LogoTitulo(titulo: "Pessoa Assistida"),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    var formValid = _formKey.currentState?.validate() ?? false;
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all<EdgeInsets>(
+                        const EdgeInsets.all(18)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.indigo),
+                    shape: MaterialStateProperty.all<CircleBorder>(
+                        const CircleBorder(
+                            //borderRadius: BorderRadius.circular(100),
+                            //side: BorderSide(color: Colors.indigo)
+                            )),
+                  ),
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Image.asset("assets/up_arrow.png"),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      var formValid =
-                          _formKey.currentState?.validate() ?? false;
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(18)),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.indigo),
-                      shape: MaterialStateProperty.all<CircleBorder>(
-                          const CircleBorder(
-                              //borderRadius: BorderRadius.circular(100),
-                              //side: BorderSide(color: Colors.indigo)
-                              )),
+                  CampoPreenchimento(
+                      controlador: _controladorCampoNome,
+                      rotulo: 'Nome Completo',
+                      icone: Icons.person),
+                  const Divider(),
+                  CampoPreenchimento(
+                      controlador: _controladorCampoUsername,
+                      rotulo: 'Username',
+                      icone: Icons.account_circle_outlined),
+                  const Divider(),
+                  CampoPreenchimento(
+                      controlador: _controladorCampoCpf,
+                      rotulo: 'CPF',
+                      teclado: TextInputType.number,
+                      icone: Icons.pin),
+                  const Divider(),
+                  CampoData(
+                    controlador: _controladorCampoDataNasc,
+                    rotulo: "Data de Nascimento",
+                  ),
+                  CampoPreenchimento(
+                      controlador: _controladorCampoTelefone,
+                      rotulo: 'Telefone (fixo ou celular)',
+                      dica: '11 99999-9999',
+                      teclado: TextInputType.phone,
+                      icone: Icons.phone),
+                  CampoPreenchimento(
+                      controlador: _controladorCampoEndereco,
+                      rotulo: 'Endereço',
+                      dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
+                      icone: Icons.home),
+                  CamposSenha(
+                    controlador: _controladorCampoSenha,
+                    rotulo: 'Senha',
+                  ),
+                  CamposSenha(
+                      controlador: _controladorCampoConfSenha,
+                      rotulo: 'Confirmar Senha'),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: const [0.3, 1],
+                        colors: [
+                          Colors.blue[900]!,
+                          Colors.blue,
+                        ],
+                      ),
                     ),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: Image.asset("assets/up_arrow.png"),
+                    child: SizedBox.expand(
+                      child: TextButton(
+                        child: AnimatedBuilder(
+                            animation: loading,
+                            builder: (context, _) {
+                              return loading.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Cadastrar Dados",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    );
+                            }),
+                        onPressed: () {
+                          var formValid =
+                              _formKey.currentState?.validate() ?? false;
+                          if (formValid) {
+                            var responsavelId = _extraiResponsavelId(code);
+                            var cadastro = CadastroUsuario(
+                                _controladorCampoNome.text,
+                                _controladorCampoUsername.text,
+                                _controladorCampoCpf.text,
+                                _controladorCampoDataNasc.text,
+                                _controladorCampoTelefone.text,
+                                _controladorCampoEndereco.text,
+                                _controladorCampoSenha.text,
+                                _controladorCampoConfSenha.text);
+                            cadastro.ResponsavelId = responsavelId;
+                            _criaCadastro(cadastro);
+                            loading.value = !loading.value;
+                          }
+                        },
+                      ),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 25,
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              CampoPreenchimento(
-                  controlador: _controladorCampoNome,
-                  rotulo: 'Nome Completo',
-                  icone: Icons.person),
-              const SizedBox(
-                height: 10,
-              ),
-              CampoPreenchimento(
-                  controlador: _controladorCampoUsername,
-                  rotulo: 'Username',
-                  icone: Icons.account_circle_outlined),
-              const SizedBox(
-                height: 10,
-              ),
-              CampoPreenchimento(
-                  controlador: _controladorCampoCpf,
-                  rotulo: 'CPF',
-                  teclado: TextInputType.number,
-                  icone: Icons.pin),
-              const SizedBox(
-                height: 10,
-              ),
-              CampoData(
-                controlador: _controladorCampoDataNasc,
-                rotulo: "Data de Nascimento",
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CampoPreenchimento(
-                  controlador: _controladorCampoTelefone,
-                  rotulo: 'Telefone (fixo ou celular)',
-                  dica: '11 99999-9999',
-                  teclado: TextInputType.phone,
-                  icone: Icons.phone),
-              const SizedBox(
-                height: 10,
-              ),
-              CampoPreenchimento(
-                  controlador: _controladorCampoEndereco,
-                  rotulo: 'Endereço',
-                  dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
-                  icone: Icons.home),
-              const SizedBox(
-                height: 10,
-              ),
-              CamposSenha(
-                controlador: _controladorCampoSenha,
-                rotulo: 'Senha',
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CamposSenha(
-                  controlador: _controladorCampoConfSenha,
-                  rotulo: 'Confirmar Senha'),
-              const SizedBox(
-                height: 40,
-              ),
-              Container(
-                height: 50,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: const [0.3, 1],
-                    colors: [
-                      Colors.blue[900]!,
-                      Colors.blue,
-                    ],
-                  ),
-                ),
-                child: SizedBox.expand(
-                  child: TextButton(
-                    child: AnimatedBuilder(
-                        animation: loading,
-                        builder: (context, _) {
-                          return loading.value
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  "Cadastrar Dados",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                );
-                        }),
-                    onPressed: () {
-                      var formValid =
-                          _formKey.currentState?.validate() ?? false;
-                      if (formValid) {
-                        var responsavelId = _extraiResponsavelId(code);
-                        var cadastro = CadastroUsuario(
-                            _controladorCampoNome.text,
-                            _controladorCampoUsername.text,
-                            _controladorCampoCpf.text,
-                            _controladorCampoDataNasc.text,
-                            _controladorCampoTelefone.text,
-                            _controladorCampoEndereco.text,
-                            _controladorCampoSenha.text,
-                            _controladorCampoConfSenha.text);
-                        cadastro.ResponsavelId = responsavelId;
-                        _criaCadastro(cadastro);
-                        loading.value = !loading.value;
-                      }
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

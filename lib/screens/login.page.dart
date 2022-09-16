@@ -83,14 +83,12 @@ class _LoginPage extends State<LoginPage> {
 
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(
-          top: 60,
-          left: 40,
-          right: 40,
-        ),
         color: Colors.white,
         child: ListView(
           children: <Widget>[
+            const SizedBox(
+              height: 60,
+            ),
             SizedBox(
               width: 128,
               height: 128,
@@ -99,16 +97,24 @@ class _LoginPage extends State<LoginPage> {
             const SizedBox(
               height: 100,
             ),
-            CampoPreenchimento(
-              controlador: _controladorCampoUsername,
-              rotulo: 'Username',
-              icone: Icons.person,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: CampoPreenchimento(
+                controlador: _controladorCampoUsername,
+                rotulo: 'Username',
+                icone: Icons.person,
+              ),
             ),
             const SizedBox(
               height: 20,
             ),
-            CamposSenha(controlador: _controladorCampoSenha, rotulo: 'Senha'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: CamposSenha(
+                  controlador: _controladorCampoSenha, rotulo: 'Senha'),
+            ),
             Container(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               height: 40,
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -129,53 +135,56 @@ class _LoginPage extends State<LoginPage> {
             const SizedBox(
               height: 50,
             ),
-            Container(
-              height: 60,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Container(
+                height: 60,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: const [0.3, 1],
+                    colors: [
+                      Colors.blue[900]!,
+                      Colors.blue,
+                    ],
+                  ),
                 ),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [0.3, 1],
-                  colors: [
-                    Colors.blue[900]!,
-                    Colors.blue,
-                  ],
+                child: SizedBox.expand(
+                  child: TextButton(
+                      child: AnimatedBuilder(
+                          animation: loading,
+                          builder: (context, _) {
+                            return loading.value
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    "Login",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  );
+                          }),
+                      onPressed: () => {
+                            loading.value = !loading.value,
+                            login = Login(_controladorCampoUsername.text,
+                                _controladorCampoSenha.text),
+                            realizaLogin(login),
+                          } // chamar o metodo que vai conexão com a api e validar o login
+                      ),
                 ),
-              ),
-              child: SizedBox.expand(
-                child: TextButton(
-                    child: AnimatedBuilder(
-                        animation: loading,
-                        builder: (context, _) {
-                          return loading.value
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  "Login",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                );
-                        }),
-                    onPressed: () => {
-                          loading.value = !loading.value,
-                          login = Login(_controladorCampoUsername.text,
-                              _controladorCampoSenha.text),
-                          realizaLogin(login),
-                        } // chamar o metodo que vai conexão com a api e validar o login
-                    ),
               ),
             ),
             const SizedBox(
