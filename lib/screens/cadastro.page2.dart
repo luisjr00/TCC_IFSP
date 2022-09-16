@@ -170,21 +170,30 @@ class _CadastroPage2 extends State<CadastroPage2> {
                       controlador: _controladorCampoNome,
                       rotulo: 'Nome Completo',
                       icone: Icons.person),
-                  const Divider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CampoPreenchimento(
                       controlador: _controladorCampoUsername,
                       rotulo: 'Username',
                       icone: Icons.account_circle_outlined),
-                  const Divider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CampoPreenchimento(
                       controlador: _controladorCampoCpf,
                       rotulo: 'CPF',
                       teclado: TextInputType.number,
                       icone: Icons.pin),
-                  const Divider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CampoData(
                     controlador: _controladorCampoDataNasc,
                     rotulo: "Data de Nascimento",
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   CampoPreenchimento(
                       controlador: _controladorCampoTelefone,
@@ -192,14 +201,23 @@ class _CadastroPage2 extends State<CadastroPage2> {
                       dica: '11 99999-9999',
                       teclado: TextInputType.phone,
                       icone: Icons.phone),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CampoPreenchimento(
                       controlador: _controladorCampoEndereco,
                       rotulo: 'Endereço',
                       dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
                       icone: Icons.home),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CamposSenha(
                     controlador: _controladorCampoSenha,
                     rotulo: 'Senha',
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   CamposSenha(
                       controlador: _controladorCampoConfSenha,
