@@ -29,7 +29,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  bool _mostrarSenha = true;
   final loading = ValueNotifier<bool>(false);
 
   Future<http.Response> buscaLoginApi(String login, String senha) async {

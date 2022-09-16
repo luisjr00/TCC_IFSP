@@ -52,22 +52,10 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
       );
     } else {
       var mensagem = json[0]['message'];
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: Text(mensagem),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }

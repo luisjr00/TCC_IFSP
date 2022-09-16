@@ -138,6 +138,7 @@ class TarefaPage extends StatelessWidget {
                             child: const Text("OK"),
                             onPressed: () {
                               _excluirTarefa(tarefa['id'].toString(), context);
+                              Navigator.of(context).pop();
                             },
                           );
                           showDialog(
