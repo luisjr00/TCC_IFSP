@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../components/AlertaMensagem.dart';
 import '../components/CampoPreenchimento.dart';
 import 'RealizaResetPage.dart';
 
@@ -90,45 +91,49 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
         appBar: AppBar(
           title: const Text('Recuparar Senha'),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CampoPreenchimento(
-                controlador: controladorCampoEmail,
-                rotulo: 'Email',
-                dica: 'example@example.com',
-                icone: Icons.email,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  elevation: 15,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CampoPreenchimento(
+                  controlador: controladorCampoEmail,
+                  rotulo: 'Email',
+                  dica: 'example@example.com',
+                  icone: Icons.email,
                 ),
-                child: const Text(
-                  'SOLICITAR RESET SENHA',
-                  style: TextStyle(
-                    color: Colors.white,
+                const SizedBox(
+                  height: 25,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    elevation: 15,
                   ),
+                  child: const Text(
+                    'SOLICITAR RESET SENHA',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    if (controladorCampoEmail.text.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertaMensagem(mensagem: "Informe um email!");
+                        },
+                      );
+                    } else {
+                      var reset = DadosResetSenha();
+                      reset.email = controladorCampoEmail.text;
+                      _solicitaReset(reset);
+                    }
+                  },
                 ),
-                onPressed: () {
-                  if (controladorCampoEmail.text.isEmpty) {
-                    var snackBar = SnackBar(
-                      content: Text('Informe um email!'),
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  } else {
-                    var reset = DadosResetSenha();
-                    reset.email = controladorCampoEmail.text;
-                    _solicitaReset(reset);
-                  }
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }

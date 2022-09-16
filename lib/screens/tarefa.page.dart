@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,22 +31,11 @@ class TarefaPage extends StatelessWidget {
         ),
       );
     } else {
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
+      var mensagem = 'Erro ao excluir tarefa';
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: const Text('Erro ao excluir tarefa'),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }
@@ -138,8 +128,31 @@ class TarefaPage extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          int id = int.parse(tarefa['id'].toString());
-                          _excluirTarefa(tarefa['id'].toString(), context);
+                          Widget okButton = FlatButton(
+                            child: const Text("CANCELAR"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                          Widget cancelaButton = FlatButton(
+                            child: const Text("OK"),
+                            onPressed: () {
+                              _excluirTarefa(tarefa['id'].toString(), context);
+                            },
+                          );
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Tem certeza?"),
+                                actionsAlignment: MainAxisAlignment.spaceEvenly,
+                                actions: [
+                                  okButton,
+                                  cancelaButton,
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     ),

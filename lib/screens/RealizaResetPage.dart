@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/components/CamposSenha.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -34,8 +35,10 @@ class RealizaReset extends StatelessWidget {
       var snackBar = SnackBar(
         content: Text(mensagem),
       );
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -44,22 +47,10 @@ class RealizaReset extends StatelessWidget {
       );
     } else {
       var mensagem = "Falha ao redefinir senha";
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: Text(mensagem),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }
@@ -87,71 +78,63 @@ class RealizaReset extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Confirmar nova senha'),
       ),
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CampoPreenchimento(
-              controlador: _controladorCampoCodigoConfirmacao,
-              rotulo: "Codigo de Confirmação",
-              icone: Icons.pin),
-          const SizedBox(
-            height: 10,
-          ),
-          CamposSenha(
-            controlador: _controladorCampoSenha,
-            rotulo: 'Senha',
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CamposSenha(
-              controlador: _controladorCampoConfSenha,
-              rotulo: 'Confirmar Senha'),
-          const SizedBox(
-            height: 10,
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
-              elevation: 15,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CampoPreenchimento(
+                controlador: _controladorCampoCodigoConfirmacao,
+                rotulo: "Codigo de Confirmação",
+                icone: Icons.pin),
+            const SizedBox(
+              height: 10,
             ),
-            child: const Text(
-              'CONFIRMAR RESET SENHA',
-              style: TextStyle(
-                color: Colors.white,
+            CamposSenha(
+              controlador: _controladorCampoSenha,
+              rotulo: 'Senha',
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CamposSenha(
+                controlador: _controladorCampoConfSenha,
+                rotulo: 'Confirmar Senha'),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                elevation: 15,
               ),
+              child: const Text(
+                'CONFIRMAR RESET SENHA',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                var reset = camposReset(email, _controladorCampoSenha.text,
+                    _controladorCampoConfSenha.text, token);
+                if (codigoVerificacao.toString() ==
+                    _controladorCampoCodigoConfirmacao.text) {
+                  _confirmaResetSenha(reset, context);
+                } else {
+                  var mensagem = "Falha ao redefinir senha";
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertaMensagem(mensagem: mensagem);
+                    },
+                  );
+                }
+              },
             ),
-            onPressed: () {
-              var reset = camposReset(email, _controladorCampoSenha.text,
-                  _controladorCampoConfSenha.text, token);
-              if (codigoVerificacao.toString() ==
-                  _controladorCampoCodigoConfirmacao.text) {
-                _confirmaResetSenha(reset, context);
-              } else {
-                Widget okButton = FlatButton(
-                  child: const Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                );
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("ALERTA"),
-                      content: const Text("Falha ao redefinir senha"),
-                      actions: [
-                        okButton,
-                      ],
-                    );
-                  },
-                );
-              }
-            },
-          ),
-        ],
-      )),
+          ],
+        )),
+      ),
     );
   }
 }

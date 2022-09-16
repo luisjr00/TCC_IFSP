@@ -126,7 +126,6 @@ class _CadastroPage2 extends State<CadastroPage2> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-          top: 20,
           left: 40,
           right: 40,
         ),
@@ -134,6 +133,9 @@ class _CadastroPage2 extends State<CadastroPage2> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
+              const SizedBox(
+                height: 15,
+              ),
               LogoTitulo(titulo: "Pessoa Assistida"),
               const SizedBox(
                 height: 15,

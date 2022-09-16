@@ -118,7 +118,6 @@ class _CadastroPage1 extends State<CadastroPage1> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-          top: 20,
           left: 40,
           right: 40,
         ),
@@ -126,6 +125,9 @@ class _CadastroPage1 extends State<CadastroPage1> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
+              const SizedBox(
+                height: 15,
+              ),
               LogoTitulo(titulo: 'Responsavel'),
               const SizedBox(
                 height: 15,

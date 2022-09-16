@@ -136,97 +136,101 @@ class _CriarTarefaState extends State<CriarTarefa> {
       appBar: AppBar(
         title: const Text('Criar tarefa'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CampoPreenchimento(
-              controlador: controladorCampoDescricao,
-              rotulo: 'Descrição',
-              dica: 'Ex. Dar comida para o rex',
-            ),
-            CampoData(
-              controlador: controladorCampoDataInicio,
-              rotulo: 'Data inicio',
-            ),
-            CampoData(
-              controlador: controladorCampoDataFim,
-              rotulo: 'Data final',
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      elevation: 15,
-                    ),
-                    child: const Text(
-                      'CANCELAR',
-                      style: TextStyle(
-                        color: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CampoPreenchimento(
+                controlador: controladorCampoDescricao,
+                rotulo: 'Descrição',
+                dica: 'Ex. Dar comida para o rex',
+              ),
+              CampoData(
+                controlador: controladorCampoDataInicio,
+                rotulo: 'Data inicio',
+              ),
+              CampoData(
+                controlador: controladorCampoDataFim,
+                rotulo: 'Data final',
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        elevation: 15,
                       ),
+                      child: const Text(
+                        'CANCELAR',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 16.0, 60.0, 16.0),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.yellow,
-                      elevation: 15,
-                    ),
-                    child: const Text(
-                      'LIMPAR',
-                      style: TextStyle(
-                        color: Colors.black,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 16.0, 60.0, 16.0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.yellow,
+                        elevation: 15,
                       ),
+                      child: const Text(
+                        'LIMPAR',
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        controladorCampoDescricao.text = '';
+                        controladorCampoDataInicio.text = '';
+                        controladorCampoDataFim.text = '';
+                      },
                     ),
-                    onPressed: () {
-                      controladorCampoDescricao.text = '';
-                      controladorCampoDataInicio.text = '';
-                      controladorCampoDataFim.text = '';
-                    },
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      elevation: 15,
-                    ),
-                    child: const Text(
-                      'SALVAR',
-                      style: TextStyle(
-                        color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        elevation: 15,
                       ),
-                    ),
-                    onPressed: () {
-                      var tarefa = Tarefa(
-                          controladorCampoDescricao.text,
-                          controladorCampoDataInicio.text,
-                          controladorCampoDataFim.text);
+                      child: const Text(
+                        'SALVAR',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        var tarefa = Tarefa(
+                            controladorCampoDescricao.text,
+                            controladorCampoDataInicio.text,
+                            controladorCampoDataFim.text);
 
-                      if (widget.tarefa != null) {
-                        _atualizaTarefa(tarefa, widget.tarefa['id'].toString());
-                      } else {
-                        _criaTarefa(tarefa);
-                      }
-                    },
+                        if (widget.tarefa != null) {
+                          _atualizaTarefa(
+                              tarefa, widget.tarefa['id'].toString());
+                        } else {
+                          _criaTarefa(tarefa);
+                        }
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

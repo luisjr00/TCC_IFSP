@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AlertaMensagem extends StatefulWidget {
@@ -11,7 +13,7 @@ class AlertaMensagem extends StatefulWidget {
 class _AlertaMensagemState extends State<AlertaMensagem> {
   @override
   Widget build(BuildContext context) {
-    Widget okButton = ElevatedButton(
+    Widget okButton = FlatButton(
       child: const Text("OK"),
       onPressed: () {
         Navigator.of(context).pop();
