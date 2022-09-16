@@ -83,7 +83,8 @@ class TarefaPage extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 123, 11, 3),
+                          backgroundColor:
+                              const Color.fromARGB(255, 123, 11, 3),
                           elevation: 15,
                         ),
                         child: const Text(

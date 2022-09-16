@@ -1,9 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
-import 'package:intl/intl.dart';
-import 'package:validatorless/validatorless.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -16,56 +15,44 @@ class CriarTarefa extends StatefulWidget {
   CriarTarefa({Key? key, required this.token, this.tarefa}) : super(key: key);
 
   @override
-  State<CriarTarefa> createState() => _CriarTarefaState(token, tarefa);
+  State<CriarTarefa> createState() => _CriarTarefaState();
 }
 
 class _CriarTarefaState extends State<CriarTarefa> {
-  var token;
-  var tarefaUpd = null;
-  _CriarTarefaState(this.token, this.tarefaUpd);
-
   void _criaTarefa(Tarefa tarefa) async {
     var response = await realizaPostTarefa(tarefa);
 
     var json = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 201) {
-      var snackBar = SnackBar(
-        content: const Text('Tarefa criada com sucesso!'),
+      var snackBar = const SnackBar(
+        content: Text('Tarefa criada com sucesso!'),
       );
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TarefasPage(token: token),
+          builder: (context) => TarefasPage(token: widget.token),
         ),
       );
     } else {
       var mensagem = json['errors']['Descricao'][0].toString();
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: Text(mensagem),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }
   }
 
   Future<http.Response> realizaPostTarefa(Tarefa tarefa) async {
+    var token = widget.token;
     var headers = {
       'Content-Type': 'Application/json',
       'Authorization': 'Bearer $token'
@@ -87,41 +74,33 @@ class _CriarTarefaState extends State<CriarTarefa> {
     var response = await realizaPutTarefa(tarefa, id);
 
     if (response.statusCode == 204) {
-      var snackBar = SnackBar(
-        content: const Text('Tarefa atualizada com sucesso!'),
+      var snackBar = const SnackBar(
+        content: Text('Tarefa atualizada com sucesso!'),
       );
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TarefasPage(token: token),
+          builder: (context) => TarefasPage(token: widget.token),
         ),
       );
     } else {
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
+      var mensagem = "Erro ao atualizar tarefa";
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: const Text("Erro ao atualizar tarefa"),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }
   }
 
   Future<http.Response> realizaPutTarefa(Tarefa tarefa, String id) async {
+    var token = widget.token;
     var headers = {
       'Content-Type': 'Application/json',
       'Authorization': 'Bearer $token'
@@ -148,10 +127,10 @@ class _CriarTarefaState extends State<CriarTarefa> {
 
   @override
   Widget build(BuildContext context) {
-    if (tarefaUpd != null) {
-      controladorCampoDescricao.text = tarefaUpd['descricao'].toString();
-      controladorCampoDataInicio.text = tarefaUpd['dataInicio'].toString();
-      controladorCampoDataFim.text = tarefaUpd['dataFinal'].toString();
+    if (widget.tarefa != null) {
+      controladorCampoDescricao.text = widget.tarefa['descricao'].toString();
+      controladorCampoDataInicio.text = widget.tarefa['dataInicio'].toString();
+      controladorCampoDataFim.text = widget.tarefa['dataFinal'].toString();
     }
     return Scaffold(
       appBar: AppBar(
@@ -237,8 +216,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
                           controladorCampoDataInicio.text,
                           controladorCampoDataFim.text);
 
-                      if (tarefaUpd != null) {
-                        _atualizaTarefa(tarefa, tarefaUpd['id'].toString());
+                      if (widget.tarefa != null) {
+                        _atualizaTarefa(tarefa, widget.tarefa['id'].toString());
                       } else {
                         _criaTarefa(tarefa);
                       }

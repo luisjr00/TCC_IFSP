@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/CamposSenha.dart';
 import 'package:http/http.dart' as http;
-import 'package:validatorless/validatorless.dart';
 import 'dart:convert';
 
 import '../components/CampoPreenchimento.dart';
@@ -98,14 +98,14 @@ class RealizaReset extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          CamposSenhas(
+          CamposSenha(
             controlador: _controladorCampoSenha,
             rotulo: 'Senha',
           ),
           const SizedBox(
             height: 10,
           ),
-          CamposSenhas(
+          CamposSenha(
               controlador: _controladorCampoConfSenha,
               rotulo: 'Confirmar Senha'),
           const SizedBox(
@@ -163,57 +163,4 @@ class camposReset {
   final String token;
 
   camposReset(this.email, this.Password, this.RePassword, this.token);
-}
-
-class CamposSenhas extends StatefulWidget {
-  final TextEditingController controlador;
-  final String rotulo;
-  const CamposSenhas(
-      {Key? key, required this.controlador, required this.rotulo})
-      : super(key: key);
-
-  @override
-  State<CamposSenhas> createState() => _CamposSenhasState(controlador, rotulo);
-}
-
-class _CamposSenhasState extends State<CamposSenhas> {
-  bool _mostrarSenha = false;
-  final TextEditingController controlador;
-  final String rotulo;
-
-  _CamposSenhasState(this.controlador, this.rotulo);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      keyboardType: TextInputType.visiblePassword,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(1.0),
-        labelText: rotulo,
-        prefixIcon: const Icon(Icons.lock),
-        suffixIcon: IconButton(
-          icon: Icon(
-              _mostrarSenha == false ? Icons.visibility_off : Icons.visibility),
-          onPressed: () {
-            setState(() {
-              _mostrarSenha = !_mostrarSenha;
-            });
-          },
-        ),
-        //hintText: "*******",
-        labelStyle: const TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      obscureText: _mostrarSenha == false ? true : false,
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-        Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
-      ]),
-    );
-  }
 }

@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:validatorless/validatorless.dart';
 import '../components/CampoData.dart';
 import '../components/CampoPreenchimento.dart';
+import '../components/CamposSenha.dart';
+import '../components/LogoETitulo.dart';
+import '../models/CadastroUsuario.dart';
 import 'cadastro.page2.dart';
 import 'dart:convert';
 
@@ -50,11 +52,14 @@ class _CadastroPage1 extends State<CadastroPage1> {
 
     if (response.statusCode == 200) {
       var code = json[0]['message'];
-      var snackBar = SnackBar(
-        content: const Text('Cadastro do responsavel realizado com sucesso!'),
+
+      var snackBar = const SnackBar(
+        content: Text('Cadastro do responsavel realizado com sucesso!'),
       );
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
@@ -63,42 +68,19 @@ class _CadastroPage1 extends State<CadastroPage1> {
         ),
       );
     } else if (response.statusCode == 500) {
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
+      var mensagem = Text(json[0]['message']).toString();
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: Text(json[0]['message']),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     } else {
       var mensagem = json['errors']['RePassword'].toString();
-      Widget okButton = FlatButton(
-        child: const Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("ALERTA"),
-            content: Text(mensagem),
-            actions: [
-              okButton,
-            ],
-          );
+          return AlertaMensagem(mensagem: mensagem);
         },
       );
     }
@@ -110,7 +92,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
     var cadastroJson = jsonEncode({
       "username": cadastro.Username,
       "Email": cadastro.Email,
-      "Password": cadastro.senha,
+      "Password": cadastro.Senha,
       "RePassword": cadastro.Confsenha,
       "Nome": cadastro.Nome,
       "Cpf": cadastro.Cpf,
@@ -134,248 +116,135 @@ class _CadastroPage1 extends State<CadastroPage1> {
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
-      body: Container(
-        //color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 20,
-            left: 40,
-            right: 40,
-          ),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: <Widget>[
-                const LogoTitulo(),
-                const SizedBox(
-                  height: 15,
-                ),
-                CampoPreenchimento(
-                    controlador: _controladorCampoNome,
-                    rotulo: 'Nome Completo',
-                    icone: Icons.person),
-                CampoPreenchimento(
-                    controlador: _controladorCampoUsername,
-                    rotulo: 'Username',
-                    icone: Icons.account_circle_outlined),
-                CampoPreenchimento(
-                    controlador: _controladorCampoCpf,
-                    rotulo: 'CPF',
-                    teclado: TextInputType.number,
-                    icone: Icons.pin),
-                const SizedBox(
-                  height: 10,
-                ),
-                CampoData(
-                  controlador: _controladorCampoDataNasc,
-                  rotulo: "Data de Nascimento",
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                CampoPreenchimento(
-                    controlador: _controladorCampoTelefone,
-                    rotulo: 'Telefone (fixo ou celular)',
-                    dica: '11 99999-9999',
-                    teclado: TextInputType.phone,
-                    icone: Icons.phone),
-                const SizedBox(
-                  height: 10,
-                ),
-                CampoPreenchimento(
-                    controlador: _controladorCampoEmail,
-                    rotulo: 'Email',
-                    dica: 'name@example.com',
-                    teclado: TextInputType.emailAddress,
-                    icone: Icons.email),
-                const SizedBox(
-                  height: 10,
-                ),
-                CampoPreenchimento(
-                    controlador: _controladorCampoEndereco,
-                    rotulo: 'Endereço',
-                    dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
-                    icone: Icons.home),
-                const SizedBox(
-                  height: 10,
-                ),
-                CamposSenhas(
-                  controlador: _controladorCampoSenha,
-                  rotulo: 'Senha',
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                CamposSenhas(
-                    controlador: _controladorCampoConfSenha,
-                    rotulo: 'Confirmar Senha'),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        var formValid =
-                            _formKey.currentState?.validate() ?? false;
-                        if (formValid) {
-                          var cadastro = CadastroUsuario(
-                              _controladorCampoNome.text,
-                              _controladorCampoUsername.text,
-                              _controladorCampoCpf.text,
-                              _controladorCampoDataNasc.text,
-                              _controladorCampoTelefone.text,
-                              _controladorCampoEmail.text,
-                              _controladorCampoEndereco.text,
-                              _controladorCampoSenha.text,
-                              _controladorCampoConfSenha.text);
-                          _criaCadastro(cadastro);
-                        }
-                      },
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(18)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.indigo),
-                        shape: MaterialStateProperty.all<CircleBorder>(
-                            const CircleBorder(
-                                //borderRadius: BorderRadius.circular(100),
-                                //side: BorderSide(color: Colors.indigo)
-                                )),
-                      ),
-                      child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset("assets/down_arrow.png"),
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.only(
+          top: 20,
+          left: 40,
+          right: 40,
+        ),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              LogoTitulo(titulo: 'Responsavel'),
+              const SizedBox(
+                height: 15,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoNome,
+                  rotulo: 'Nome Completo',
+                  icone: Icons.person),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoUsername,
+                  rotulo: 'Username',
+                  icone: Icons.account_circle_outlined),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoCpf,
+                  rotulo: 'CPF',
+                  teclado: TextInputType.number,
+                  icone: Icons.pin),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoData(
+                controlador: _controladorCampoDataNasc,
+                rotulo: "Data de Nascimento",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoTelefone,
+                  rotulo: 'Telefone (fixo ou celular)',
+                  dica: '11 99999-9999',
+                  teclado: TextInputType.phone,
+                  icone: Icons.phone),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoEmail,
+                  rotulo: 'Email',
+                  dica: 'name@example.com',
+                  teclado: TextInputType.emailAddress,
+                  icone: Icons.email),
+              const SizedBox(
+                height: 10,
+              ),
+              CampoPreenchimento(
+                  controlador: _controladorCampoEndereco,
+                  rotulo: 'Endereço',
+                  dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
+                  icone: Icons.home),
+              const SizedBox(
+                height: 10,
+              ),
+              CamposSenha(
+                controlador: _controladorCampoSenha,
+                rotulo: 'Senha',
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CamposSenha(
+                  controlador: _controladorCampoConfSenha,
+                  rotulo: 'Confirmar Senha'),
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      var formValid =
+                          _formKey.currentState?.validate() ?? false;
+                      if (formValid) {
+                        var cadastro = CadastroUsuario(
+                            _controladorCampoNome.text,
+                            _controladorCampoUsername.text,
+                            _controladorCampoCpf.text,
+                            _controladorCampoDataNasc.text,
+                            _controladorCampoTelefone.text,
+                            _controladorCampoEndereco.text,
+                            _controladorCampoSenha.text,
+                            _controladorCampoConfSenha.text);
+                        cadastro.Email = _controladorCampoEmail.text;
+                        _criaCadastro(cadastro);
+                      }
+                    },
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.all(18)),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.indigo),
+                      shape: MaterialStateProperty.all<CircleBorder>(
+                          const CircleBorder(
+                              //borderRadius: BorderRadius.circular(100),
+                              //side: BorderSide(color: Colors.indigo)
+                              )),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-              ],
-            ),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Image.asset("assets/down_arrow.png"),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class CadastroUsuario {
-  final String Nome;
-  final String Username;
-  final String Cpf;
-  final String DataNasc;
-  final String Telefone;
-  final String Email;
-  final String Endereco;
-  final String senha;
-  final String Confsenha;
-
-  CadastroUsuario(this.Nome, this.Username, this.Cpf, this.DataNasc,
-      this.Telefone, this.Email, this.Endereco, this.senha, this.Confsenha);
-
-  @override
-  String toString() {
-    return '$Username, $Cpf, $DataNasc, $Telefone, $Email, $Endereco, $senha, $Confsenha';
-  }
-}
-
-class LogoTitulo extends StatelessWidget {
-  const LogoTitulo({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 78,
-          height: 78,
-          child: Image.asset("assets/texte_cube.jpg"),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const Text(
-          "Cadastro",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            //fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            fontSize: 25,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const Text(
-          "Responsável",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            //fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            fontSize: 20,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class CamposSenhas extends StatefulWidget {
-  final TextEditingController controlador;
-  final String rotulo;
-  const CamposSenhas(
-      {Key? key, required this.controlador, required this.rotulo})
-      : super(key: key);
-
-  @override
-  State<CamposSenhas> createState() => _CamposSenhasState(controlador, rotulo);
-}
-
-class _CamposSenhasState extends State<CamposSenhas> {
-  bool _mostrarSenha = false;
-  final TextEditingController controlador;
-  final String rotulo;
-
-  _CamposSenhasState(this.controlador, this.rotulo);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controlador,
-      keyboardType: TextInputType.visiblePassword,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(1.0),
-        labelText: rotulo,
-        prefixIcon: const Icon(Icons.lock),
-        suffixIcon: IconButton(
-          icon: Icon(
-              _mostrarSenha == false ? Icons.visibility_off : Icons.visibility),
-          onPressed: () {
-            setState(() {
-              _mostrarSenha = !_mostrarSenha;
-            });
-          },
-        ),
-        //hintText: "*******",
-        labelStyle: const TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.w400,
-          fontSize: 20,
-        ),
-      ),
-      obscureText: _mostrarSenha == false ? true : false,
-      style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-        Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
-      ]),
     );
   }
 }

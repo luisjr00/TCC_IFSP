@@ -1,9 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:validatorless/validatorless.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -22,7 +20,7 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
 
   int _gerarNumero() {
     int numero = 0;
-    Random numeroAleatorio = new Random();
+    Random numeroAleatorio = Random();
     numero = numeroAleatorio.nextInt(1000);
     return numero;
   }
@@ -34,13 +32,14 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
 
     if (response.statusCode == 200) {
       String token = json[0]['message'].toString();
-      // ignore: use_build_context_synchronously
-      var snackBar = SnackBar(
-        content: const Text('Email com o codigo de verificação enviado!'),
+      var snackBar = const SnackBar(
+        content: Text('Email com o codigo de verificação enviado!'),
       );
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -118,7 +117,7 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
                 onPressed: () {
                   if (controladorCampoEmail.text.isEmpty) {
                     var snackBar = SnackBar(
-                      content: const Text('Informe um email!'),
+                      content: Text('Informe um email!'),
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);

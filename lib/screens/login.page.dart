@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/CampoPreenchimento.dart';
+import 'package:flutter_application_1/components/CamposSenha.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,7 +41,8 @@ class _LoginPage extends State<LoginPage> {
     return response;
   }
 
-  final TextEditingController _controladorCampoEmail = TextEditingController();
+  final TextEditingController _controladorCampoUsername =
+      TextEditingController();
   final TextEditingController _controladorCampoSenha = TextEditingController();
 
   @override
@@ -97,53 +100,15 @@ class _LoginPage extends State<LoginPage> {
             const SizedBox(
               height: 100,
             ),
-            TextFormField(
-              controller: _controladorCampoEmail,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.person),
-                labelText: "Username",
-                labelStyle: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20,
-                ),
-              ),
-              style: const TextStyle(fontSize: 20),
+            CampoPreenchimento(
+              controlador: _controladorCampoUsername,
+              rotulo: 'Username',
+              icone: Icons.person,
             ),
             const SizedBox(
               height: 20,
             ),
-            TextFormField(
-              controller: _controladorCampoSenha,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                labelText: "Senha",
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(_mostrarSenha == false
-                      ? Icons.visibility
-                      : Icons.visibility_off),
-                  onPressed: () {
-                    setState(() {
-                      _mostrarSenha = !_mostrarSenha;
-                    });
-                  },
-                ),
-                //hintText: "*******",
-                labelStyle: const TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                ),
-              ),
-              obscureText: _mostrarSenha,
-              style: const TextStyle(fontSize: 16),
-              // validator: Validatorless.multiple([
-              //   Validatorless.required("Campo requerido"),
-              //   Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
-              // ]),
-            ),
+            CamposSenha(controlador: _controladorCampoSenha, rotulo: 'Senha'),
             Container(
               height: 40,
               alignment: Alignment.centerRight,
@@ -207,7 +172,7 @@ class _LoginPage extends State<LoginPage> {
                         }),
                     onPressed: () => {
                           loading.value = !loading.value,
-                          login = Login(_controladorCampoEmail.text,
+                          login = Login(_controladorCampoUsername.text,
                               _controladorCampoSenha.text),
                           realizaLogin(login),
                         } // chamar o metodo que vai conexão com a api e validar o login
