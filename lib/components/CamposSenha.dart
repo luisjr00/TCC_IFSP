@@ -45,10 +45,12 @@ class _CamposSenhaState extends State<CamposSenha> {
       ),
       obscureText: _mostrarSenha == false ? true : false,
       style: const TextStyle(fontSize: 20),
-      validator: Validatorless.multiple([
-        Validatorless.required("Campo requerido"),
-        Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres")
-      ]),
+      validator: Validatorless.multiple(
+        [
+          Validatorless.required("Campo requerido"),
+          Validatorless.min(6, "Senha precisa ter no mínimo 6 caracteres"),
+        ],
+      ),
     );
   }
 }

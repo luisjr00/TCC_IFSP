@@ -62,10 +62,8 @@ class TarefaPage extends StatelessWidget {
             child: Column(
               children: [
                 Text(tarefa['descricao']),
-                Text(tarefa['dataInicio']),
-                Text(tarefa['dataFinal']),
-                Text(tarefa['responsavelId'].toString()),
-                Text(tarefa['idosoId'].toString()),
+                Text(tarefa['horaAlerta']),
+                Text(tarefa['dataAlerta']),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

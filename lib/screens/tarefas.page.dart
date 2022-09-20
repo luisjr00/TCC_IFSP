@@ -69,7 +69,10 @@ class _TarefasPageState extends State<TarefasPage> {
                     },
                     leading: const Icon(Icons.calendar_today, size: 50),
                     title: Text(tarefa['descricao']),
-                    subtitle: Text(tarefa['dataInicio']),
+                    subtitle: Text('Hora: ' +
+                        tarefa['horaAlerta'] +
+                        ', Data: ' +
+                        tarefa['dataAlerta']),
                   ),
                 );
               },

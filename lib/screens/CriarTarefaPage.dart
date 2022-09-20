@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:validatorless/validatorless.dart';
 import 'dart:convert';
 
 import '../components/CampoData.dart';
+import '../components/CampoHora.dart';
 import '../components/CampoPreenchimento.dart';
 
 class CriarTarefa extends StatefulWidget {
@@ -60,8 +63,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
 
     var cadastroJson = jsonEncode({
       "descricao": tarefa.descricao,
-      "dataInicio": tarefa.dataInicio,
-      "dataFinal": tarefa.dataFim
+      "horaAlerta": tarefa.horaAlerta,
+      "dataAlerta": tarefa.dataAlerta,
     });
 
     var url = Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa");
@@ -108,8 +111,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
 
     var cadastroJson = jsonEncode({
       "descricao": tarefa.descricao,
-      "dataInicio": tarefa.dataInicio,
-      "dataFinal": tarefa.dataFim
+      "horaAlerta": tarefa.horaAlerta,
+      "DataAlerta": tarefa.dataAlerta,
     });
 
     var url =
@@ -121,16 +124,17 @@ class _CriarTarefaState extends State<CriarTarefa> {
 
   final TextEditingController controladorCampoDescricao =
       TextEditingController();
-  final TextEditingController controladorCampoDataInicio =
+  final TextEditingController controladorCampoHoraAlerta =
       TextEditingController();
-  final TextEditingController controladorCampoDataFim = TextEditingController();
+  final TextEditingController controladorCampoDataAlerta =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     if (widget.tarefa != null) {
       controladorCampoDescricao.text = widget.tarefa['descricao'].toString();
-      controladorCampoDataInicio.text = widget.tarefa['dataInicio'].toString();
-      controladorCampoDataFim.text = widget.tarefa['dataFinal'].toString();
+      controladorCampoHoraAlerta.text = widget.tarefa['horaAlerta'].toString();
+      controladorCampoDataAlerta.text = widget.tarefa['dataAlerta'].toString();
     }
     return Scaffold(
       appBar: AppBar(
@@ -147,13 +151,12 @@ class _CriarTarefaState extends State<CriarTarefa> {
                 rotulo: 'Descrição',
                 dica: 'Ex. Dar comida para o rex',
               ),
+              CampoHora(
+                  controlador: controladorCampoHoraAlerta,
+                  rotulo: 'Hora do alerta'),
               CampoData(
-                controlador: controladorCampoDataInicio,
-                rotulo: 'Data inicio',
-              ),
-              CampoData(
-                controlador: controladorCampoDataFim,
-                rotulo: 'Data final',
+                controlador: controladorCampoDataAlerta,
+                rotulo: 'Data do alarme',
               ),
               const SizedBox(
                 height: 25,
@@ -194,8 +197,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
                       ),
                       onPressed: () {
                         controladorCampoDescricao.text = '';
-                        controladorCampoDataInicio.text = '';
-                        controladorCampoDataFim.text = '';
+                        controladorCampoHoraAlerta.text = '';
+                        controladorCampoDataAlerta.text = '';
                       },
                     ),
                   ),
@@ -215,8 +218,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
                       onPressed: () {
                         var tarefa = Tarefa(
                             controladorCampoDescricao.text,
-                            controladorCampoDataInicio.text,
-                            controladorCampoDataFim.text);
+                            controladorCampoHoraAlerta.text,
+                            controladorCampoDataAlerta.text);
 
                         if (widget.tarefa != null) {
                           _atualizaTarefa(
@@ -239,11 +242,12 @@ class _CriarTarefaState extends State<CriarTarefa> {
 
 class Tarefa {
   final String descricao;
-  final String dataInicio;
-  final String dataFim;
+  final String dataAlerta;
+  final String horaAlerta;
+  String? dataFinalizacao;
   int? responsavelId;
   int? idosoId;
   int? id;
 
-  Tarefa(this.descricao, this.dataInicio, this.dataFim);
+  Tarefa(this.descricao, this.horaAlerta, this.dataAlerta);
 }
