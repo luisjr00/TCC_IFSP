@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
@@ -55,41 +55,83 @@ class TarefaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(tarefa['descricao'])),
+      appBar: AppBar(title: Text('Tarefa')),
       body: Center(
-        child: SingleChildScrollView(
-          child: Card(
-            child: Column(
-              children: [
-                Text(tarefa['descricao']),
-                Text(tarefa['horaAlerta']),
-                Text(tarefa['dataAlerta']),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 123, 11, 3),
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'CANCELAR',
-                          style: TextStyle(
-                            color: Colors.white,
+        child: Card(
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          border: Border.fromBorderSide(
+                            BorderSide(
+                                width: 4,
+                                color: Colors.black,
+                                style: BorderStyle.solid), //BorderSide
+                          )),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            tarefa['descricao'],
+                            style: TextStyle(fontSize: 30),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
                       ),
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
-                      child: TextButton(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          border: Border.fromBorderSide(
+                            BorderSide(
+                                width: 4,
+                                color: Colors.black,
+                                style: BorderStyle.solid), //BorderSide
+                          )),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                tarefa['horaAlerta'],
+                                style: TextStyle(fontSize: 30),
+                              ),
+                              Divider(
+                                color: Colors.black,
+                              ),
+                              Text(
+                                tarefa['dataAlerta'],
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 100,
+              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.blue,
                           elevation: 15,
@@ -110,11 +152,7 @@ class TarefaPage extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
-                      child: TextButton(
+                      TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.red,
                           elevation: 15,
@@ -154,35 +192,35 @@ class TarefaPage extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'FINALIZAR',
-                          style: TextStyle(
-                            color: Colors.white,
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            elevation: 15,
                           ),
+                          child: const Text(
+                            'FINALIZAR',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {},
                         ),
-                        onPressed: () {},
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                    ],
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       ),
