@@ -4,20 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_tts/flutter_tts.dart';
 
 import 'CriarTarefaPage.dart';
 
 // ignore: must_be_immutable
-class TarefaPage extends StatelessWidget {
+class TarefaPage extends StatefulWidget {
   Map<String, dynamic> tarefa;
   var token;
   TarefaPage({Key? key, required this.tarefa, this.token}) : super(key: key);
 
+  @override
+  State<TarefaPage> createState() => _TarefaPageState();
+}
+
+class _TarefaPageState extends State<TarefaPage> {
   void _excluirTarefa(String id, BuildContext context) async {
     var response = await realizaDeleteTarefa(id);
 
     if (response.statusCode == 204) {
-      // ignore: prefer_const_constructors
       var snackBar = SnackBar(
         content: const Text('Tarefa excluida com sucesso!'),
       );
@@ -27,7 +32,7 @@ class TarefaPage extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TarefasPage(token: token),
+          builder: (context) => TarefasPage(token: widget.token),
         ),
       );
     } else {
@@ -42,7 +47,7 @@ class TarefaPage extends StatelessWidget {
   }
 
   Future<http.Response> realizaDeleteTarefa(String id) async {
-    var headers = {'Authorization': 'Bearer $token'};
+    var headers = {'Authorization': 'Bearer ${widget.token}'};
 
     var url =
         Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa/$id");
@@ -50,6 +55,53 @@ class TarefaPage extends StatelessWidget {
     var response = await http.delete(url, headers: headers);
 
     return response;
+  }
+
+  bool isSpeaking = false;
+  final TextEditingController _controller = TextEditingController();
+  final _flutterTts = FlutterTts();
+
+  void initializeTts() {
+    _flutterTts.setStartHandler(() {
+      setState(() {
+        isSpeaking = true;
+      });
+    });
+    _flutterTts.setCompletionHandler(() {
+      setState(() {
+        isSpeaking = false;
+      });
+    });
+    _flutterTts.setErrorHandler((message) {
+      setState(() {
+        isSpeaking = false;
+      });
+    });
+    _flutterTts.setLanguage("pt-br");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeTts();
+  }
+
+  void speak() async {
+    await _flutterTts.speak(widget.tarefa['descricao']);
+  }
+
+  void stop() async {
+    await _flutterTts.stop();
+    setState(() {
+      isSpeaking = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
   }
 
   @override
@@ -80,9 +132,19 @@ class TarefaPage extends StatelessWidget {
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            tarefa['descricao'],
-                            style: TextStyle(fontSize: 30),
+                          child: Column(
+                            children: [
+                              Text(
+                                widget.tarefa['descricao'],
+                                style: TextStyle(fontSize: 30),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  isSpeaking ? stop() : speak();
+                                },
+                                child: Text(isSpeaking ? "Stop" : "Ouvir"),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -105,14 +167,14 @@ class TarefaPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                tarefa['horaAlerta'],
+                                widget.tarefa['horaAlerta'],
                                 style: TextStyle(fontSize: 30),
                               ),
                               Divider(
                                 color: Colors.black,
                               ),
                               Text(
-                                tarefa['dataAlerta'],
+                                widget.tarefa['dataAlerta'],
                                 style: TextStyle(fontSize: 30),
                               ),
                             ],
@@ -146,8 +208,8 @@ class TarefaPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  CriarTarefa(tarefa: tarefa, token: token),
+                              builder: (context) => CriarTarefa(
+                                  tarefa: widget.tarefa, token: widget.token),
                             ),
                           );
                         },
@@ -173,7 +235,8 @@ class TarefaPage extends StatelessWidget {
                           Widget cancelaButton = FlatButton(
                             child: const Text("OK"),
                             onPressed: () {
-                              _excluirTarefa(tarefa['id'].toString(), context);
+                              _excluirTarefa(
+                                  widget.tarefa['id'].toString(), context);
                               Navigator.of(context).pop();
                             },
                           );
