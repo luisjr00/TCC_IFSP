@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/CampoPreenchimento.dart';
 import 'package:flutter_application_1/components/CamposSenha.dart';
+import 'package:flutter_application_1/screens/HomePage.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -56,7 +57,7 @@ class _LoginPage extends State<LoginPage> {
         //ignore: use_build_context_synchronously
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TarefasPage(token: token)),
+          MaterialPageRoute(builder: (context) => HomePage(token: token)),
         );
       } else {
         loading.value = !loading.value;

@@ -127,13 +127,14 @@ class _TarefaPageState extends State<TarefaPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.black12,
-                          border: Border.fromBorderSide(
-                            BorderSide(
-                                width: 4,
-                                color: Colors.black,
-                                style: BorderStyle.solid), //BorderSide
-                          )),
+                        color: Colors.black12,
+                        border: Border.fromBorderSide(
+                          BorderSide(
+                              width: 4,
+                              color: Colors.black,
+                              style: BorderStyle.solid), //BorderSide
+                        ),
+                      ),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
