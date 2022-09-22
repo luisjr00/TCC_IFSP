@@ -1,9 +1,7 @@
-import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_1/screens/login.page.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,18 +46,16 @@ class _HomePageState extends State<HomePage> {
           leading: const Icon(Icons.home),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const SizedBox(
-              height: 25,
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 170,
+                    width: 150,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       border: Border.fromBorderSide(
@@ -94,7 +90,8 @@ class _HomePageState extends State<HomePage> {
                             height: 20,
                           ),
                           Text(
-                            'Ver tarefas',
+                            'Tarefas Agendadas',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -104,8 +101,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 170,
+                    width: 150,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       border: Border.fromBorderSide(
@@ -126,14 +123,15 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Icon(
-                            Icons.accessible_outlined,
+                            Icons.account_circle_outlined,
                             size: 80,
                           ),
                           SizedBox(
                             height: 20,
                           ),
                           Text(
-                            'Cadastrar idoso',
+                            'Dados da conta',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -151,8 +149,8 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 170,
+                    width: 150,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       border: Border.fromBorderSide(
@@ -180,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                             height: 20,
                           ),
                           Text(
-                            'Ver tarefas finalizadas',
+                            'Histórico de Tarefas',
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -191,8 +189,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 170,
+                    width: 150,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       border: Border.fromBorderSide(
@@ -208,7 +206,9 @@ class _HomePageState extends State<HomePage> {
                         primary: Colors.white,
                         onPrimary: Colors.black,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _deslogarDaConta();
+                      },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
@@ -236,5 +236,30 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Future<bool?> _deslogarDaConta() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Deseja deslogar do AMAAI?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+                child: const Text('Sim'),
+              ),
+            ],
+          );
+        });
   }
 }

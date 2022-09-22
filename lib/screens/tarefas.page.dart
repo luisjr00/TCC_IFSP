@@ -38,7 +38,6 @@ class _TarefasPageState extends State<TarefasPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tarefas'),
-        leading: const Icon(Icons.calendar_today),
       ),
       body: FutureBuilder<List>(
         future: pegarTarefas(),
