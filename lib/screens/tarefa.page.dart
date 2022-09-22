@@ -104,8 +104,13 @@ class _TarefaPageState extends State<TarefaPage> {
     super.dispose();
   }
 
+  bool _reproduzSom = true;
   @override
   Widget build(BuildContext context) {
+    if (_reproduzSom) {
+      speak();
+      _reproduzSom = false;
+    }
     return Scaffold(
       appBar: AppBar(title: Text('Tarefa')),
       body: Center(
@@ -142,7 +147,7 @@ class _TarefaPageState extends State<TarefaPage> {
                                 onPressed: () {
                                   isSpeaking ? stop() : speak();
                                 },
-                                child: Text(isSpeaking ? "Stop" : "Ouvir"),
+                                child: Text(isSpeaking ? "Parar" : "Repetir"),
                               )
                             ],
                           ),

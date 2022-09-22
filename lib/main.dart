@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
       ],
-      //supportedLocales: const [Locale("pt", "BR")],
+      supportedLocales: const [Locale("pt", "BR")],
       title: 'Teste TCC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.indigo),

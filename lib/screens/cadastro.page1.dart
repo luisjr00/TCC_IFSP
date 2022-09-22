@@ -68,7 +68,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
         ),
       );
     } else if (response.statusCode == 500) {
-      var mensagem = Text(json[0]['message']).toString();
+      var mensagem = json[0]['message'].toString();
       showDialog(
         context: context,
         builder: (BuildContext context) {
