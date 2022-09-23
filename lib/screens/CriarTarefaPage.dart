@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:validatorless/validatorless.dart';
 import 'dart:convert';
-
 import '../components/CampoData.dart';
 import '../components/CampoHora.dart';
 import '../components/CampoPreenchimento.dart';
@@ -36,7 +33,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       // ignore: use_build_context_synchronously
-      Navigator.push(
+      Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute(
           builder: (context) => TarefasPage(token: widget.token),
@@ -85,7 +82,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       // ignore: use_build_context_synchronously
-      Navigator.push(
+      Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute(
           builder: (context) => TarefasPage(token: widget.token),
@@ -109,11 +106,13 @@ class _CriarTarefaState extends State<CriarTarefa> {
       'Authorization': 'Bearer $token'
     };
 
-    var cadastroJson = jsonEncode({
-      "descricao": tarefa.descricao,
-      "horaAlerta": tarefa.horaAlerta,
-      "DataAlerta": tarefa.dataAlerta,
-    });
+    var cadastroJson = jsonEncode(
+      {
+        "descricao": tarefa.descricao,
+        "horaAlerta": tarefa.horaAlerta,
+        "DataAlerta": tarefa.dataAlerta,
+      },
+    );
 
     var url =
         Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa/$id");
