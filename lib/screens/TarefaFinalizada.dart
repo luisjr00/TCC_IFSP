@@ -2,23 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
-import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 
-import 'CriarTarefaPage.dart';
-
 // ignore: must_be_immutable
-class TarefaPage extends StatefulWidget {
+class TarefaFinalizada extends StatefulWidget {
   Map<String, dynamic> tarefa;
   var token;
-  TarefaPage({Key? key, required this.tarefa, this.token}) : super(key: key);
+  TarefaFinalizada({Key? key, required this.tarefa, this.token})
+      : super(key: key);
 
   @override
-  State<TarefaPage> createState() => _TarefaPageState();
+  State<TarefaFinalizada> createState() => _TarefaFinalizadaState();
 }
 
-class _TarefaPageState extends State<TarefaPage> {
+class _TarefaFinalizadaState extends State<TarefaFinalizada> {
   void _excluirTarefa(String id, BuildContext context) async {
     var response = await realizaDeleteTarefa(id);
 
@@ -48,39 +46,6 @@ class _TarefaPageState extends State<TarefaPage> {
         Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa/$id");
 
     var response = await http.delete(url, headers: headers);
-
-    return response;
-  }
-
-  void _finalizaTarefa(String id, BuildContext context) async {
-    var response = await realizaAtualizacaoParaFinalizarTarefa(id);
-
-    if (response.statusCode == 204) {
-      var snackBar = SnackBar(
-        content: const Text('Tarefa finalizada com sucesso!'),
-      );
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
-    } else {
-      var mensagem = 'Erro ao excluir tarefa';
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertaMensagem(mensagem: mensagem);
-        },
-      );
-    }
-  }
-
-  Future<http.Response> realizaAtualizacaoParaFinalizarTarefa(String id) async {
-    var headers = {'Authorization': 'Bearer ${widget.token}'};
-
-    var url = Uri.parse(
-        "https://app-tcc-amai-producao.herokuapp.com/tarefa/$id/finalizar");
-
-    var response = await http.put(url, headers: headers);
 
     return response;
   }
@@ -132,17 +97,12 @@ class _TarefaPageState extends State<TarefaPage> {
     super.dispose();
   }
 
-  bool _reproduzSom = true;
   bool carregando = false;
 
   @override
   Widget build(BuildContext context) {
-    if (_reproduzSom) {
-      speak();
-      _reproduzSom = false;
-    }
     return Scaffold(
-      appBar: AppBar(title: Text('Tarefa')),
+      appBar: AppBar(title: Text('Finalizada')),
       body: Center(
         child: Card(
           child: Column(
@@ -169,9 +129,29 @@ class _TarefaPageState extends State<TarefaPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
                                 widget.tarefa['descricao'],
+                                style: TextStyle(fontSize: 30),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                'Criada em ' + widget.tarefa['dataCriacao'],
+                                style: TextStyle(fontSize: 30),
+                                textAlign: TextAlign.center,
+                              ),
+                              Divider(),
+                              Text(
+                                'Finalizada em ' +
+                                    widget.tarefa['dataFinalizacao'],
+                                style: TextStyle(fontSize: 30),
+                                textAlign: TextAlign.center,
+                              ),
+                              Divider(),
+                              Text(
+                                'Horario do alerta :' +
+                                    widget.tarefa['horaAlerta'],
                                 style: TextStyle(fontSize: 30),
                                 textAlign: TextAlign.center,
                               ),
@@ -230,27 +210,6 @@ class _TarefaPageState extends State<TarefaPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'EDITAR',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CriarTarefa(
-                                  tarefa: widget.tarefa, token: widget.token),
-                            ),
-                          );
-                        },
-                      ),
                       carregando
                           ? CircularProgressIndicator()
                           : TextButton(
@@ -270,8 +229,7 @@ class _TarefaPageState extends State<TarefaPage> {
                                 });
                                 Widget cancelaButton = FlatButton(
                                   child: const Text("CANCELAR"),
-                                  onPressed: () async {
-                                    //await Future.delayed(Duration(seconds: 2));
+                                  onPressed: () {
                                     setState(() {
                                       carregando = false;
                                     });
@@ -280,7 +238,7 @@ class _TarefaPageState extends State<TarefaPage> {
                                 );
                                 Widget okButton = FlatButton(
                                   child: const Text("OK"),
-                                  onPressed: () async {
+                                  onPressed: () {
                                     _excluirTarefa(
                                         widget.tarefa['id'].toString(),
                                         context);
@@ -308,73 +266,6 @@ class _TarefaPageState extends State<TarefaPage> {
                             ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            elevation: 15,
-                          ),
-                          child: const Text(
-                            'FINALIZAR',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              carregando = true;
-                            });
-                            Widget okButton = FlatButton(
-                              child: const Text("CANCELAR"),
-                              onPressed: () {
-                                setState(() {
-                                  carregando = false;
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            );
-                            Widget cancelaButton = FlatButton(
-                              child: const Text("OK"),
-                              onPressed: () async {
-                                _finalizaTarefa(
-                                    widget.tarefa['id'].toString(), context);
-                                setState(() {
-                                  carregando = false;
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            );
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Tem certeza?"),
-                                  actionsAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  actions: [
-                                    okButton,
-                                    cancelaButton,
-                                  ],
-                                );
-                              },
-                            );
-                            await Future.delayed(Duration(seconds: 2));
-
-                            setState(() {
-                              carregando = false;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ],

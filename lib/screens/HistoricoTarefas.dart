@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'HomePage.dart';
+import 'TarefaFinalizada.dart';
 
 class HistoricoTarefas extends StatefulWidget {
   var token;
@@ -24,6 +25,15 @@ class _HistoricoTarefasState extends State<HistoricoTarefas> {
     } else {
       throw Exception("Erro ao carregar tarefas");
     }
+  }
+
+  late Future<List> todasTarefasFinalizadas;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    todasTarefasFinalizadas = pegarTarefas();
   }
 
   @override
@@ -76,7 +86,20 @@ class _HistoricoTarefasState extends State<HistoricoTarefas> {
                   var tarefa = snapshot.data![index];
                   return Card(
                     child: ListTile(
-                      onTap: () {},
+                      onTap: () async {
+                        bool retorno = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TarefaFinalizada(
+                                tarefa: tarefa, token: widget.token),
+                          ),
+                        );
+                        if (retorno) {
+                          setState(() {
+                            todasTarefasFinalizadas = pegarTarefas();
+                          });
+                        }
+                      },
                       leading: const Icon(Icons.calendar_today, size: 50),
                       title: Text(tarefa['descricao']),
                       // ignore: prefer_interpolation_to_compose_strings

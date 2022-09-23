@@ -205,7 +205,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
                                 color: Colors.white,
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
                                 carregando = true;
                               });
@@ -220,6 +220,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
                               } else {
                                 _criaTarefa(tarefa);
                               }
+                              await Future.delayed(Duration(seconds: 2));
+
                               setState(() {
                                 carregando = false;
                               });
