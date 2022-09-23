@@ -41,7 +41,7 @@ class _HistoricoTarefasState extends State<HistoricoTarefas> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Tarefas'),
+          title: const Text('Tarefas finalizadas'),
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,

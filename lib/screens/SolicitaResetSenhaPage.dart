@@ -73,6 +73,8 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
     return response;
   }
 
+  bool carregando = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,32 +96,38 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
                 const SizedBox(
                   height: 25,
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    elevation: 15,
-                  ),
-                  child: const Text(
-                    'SOLICITAR RESET SENHA',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (controladorCampoEmail.text.isEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertaMensagem(mensagem: "Informe um email!");
+                carregando
+                    ? CircularProgressIndicator()
+                    : TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          elevation: 15,
+                        ),
+                        child: const Text(
+                          'SOLICITAR RESET SENHA',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            carregando = true;
+                          });
+                          if (controladorCampoEmail.text.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertaMensagem(
+                                    mensagem: "Informe um email!");
+                              },
+                            );
+                          } else {
+                            var reset = DadosResetSenha();
+                            reset.email = controladorCampoEmail.text;
+                            _solicitaReset(reset);
+                          }
                         },
-                      );
-                    } else {
-                      var reset = DadosResetSenha();
-                      reset.email = controladorCampoEmail.text;
-                      _solicitaReset(reset);
-                    }
-                  },
-                ),
+                      ),
               ],
             ),
           ),

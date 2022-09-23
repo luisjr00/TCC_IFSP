@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
-import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../components/CampoData.dart';
@@ -32,13 +31,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacement<void, void>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TarefasPage(token: widget.token),
-        ),
-      );
+      Navigator.pop(context, true);
     } else {
       var mensagem = json['errors']['Descricao'][0].toString();
 
@@ -81,13 +74,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacement<void, void>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TarefasPage(token: widget.token),
-        ),
-      );
+      Navigator.pop(context, true);
     } else {
       var mensagem = "Erro ao atualizar tarefa";
       showDialog(
@@ -127,6 +114,8 @@ class _CriarTarefaState extends State<CriarTarefa> {
       TextEditingController();
   final TextEditingController controladorCampoDataAlerta =
       TextEditingController();
+
+  bool carregando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -203,31 +192,39 @@ class _CriarTarefaState extends State<CriarTarefa> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        elevation: 15,
-                      ),
-                      child: const Text(
-                        'SALVAR',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: () {
-                        var tarefa = Tarefa(
-                            controladorCampoDescricao.text,
-                            controladorCampoHoraAlerta.text,
-                            controladorCampoDataAlerta.text);
+                    child: carregando
+                        ? CircularProgressIndicator()
+                        : TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              elevation: 15,
+                            ),
+                            child: const Text(
+                              'SALVAR',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                carregando = true;
+                              });
+                              var tarefa = Tarefa(
+                                  controladorCampoDescricao.text,
+                                  controladorCampoHoraAlerta.text,
+                                  controladorCampoDataAlerta.text);
 
-                        if (widget.tarefa != null) {
-                          _atualizaTarefa(
-                              tarefa, widget.tarefa['id'].toString());
-                        } else {
-                          _criaTarefa(tarefa);
-                        }
-                      },
-                    ),
+                              if (widget.tarefa != null) {
+                                _atualizaTarefa(
+                                    tarefa, widget.tarefa['id'].toString());
+                              } else {
+                                _criaTarefa(tarefa);
+                              }
+                              setState(() {
+                                carregando = false;
+                              });
+                            },
+                          ),
                   ),
                 ],
               ),

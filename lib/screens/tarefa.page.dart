@@ -29,12 +29,7 @@ class _TarefaPageState extends State<TarefaPage> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TarefasPage(token: widget.token),
-        ),
-      );
+      Navigator.pop(context, true);
     } else {
       var mensagem = 'Erro ao excluir tarefa';
       showDialog(
@@ -53,6 +48,39 @@ class _TarefaPageState extends State<TarefaPage> {
         Uri.parse("https://app-tcc-amai-producao.herokuapp.com/tarefa/$id");
 
     var response = await http.delete(url, headers: headers);
+
+    return response;
+  }
+
+  void _finalizaTarefa(String id, BuildContext context) async {
+    var response = await realizaAtualizacaoParaFinalizarTarefa(id);
+
+    if (response.statusCode == 204) {
+      var snackBar = SnackBar(
+        content: const Text('Tarefa finalizada com sucesso!'),
+      );
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+    } else {
+      var mensagem = 'Erro ao excluir tarefa';
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertaMensagem(mensagem: mensagem);
+        },
+      );
+    }
+  }
+
+  Future<http.Response> realizaAtualizacaoParaFinalizarTarefa(String id) async {
+    var headers = {'Authorization': 'Bearer ${widget.token}'};
+
+    var url = Uri.parse(
+        "https://app-tcc-amai-producao.herokuapp.com/tarefa/$id/finalizar");
+
+    var response = await http.put(url, headers: headers);
 
     return response;
   }
@@ -105,6 +133,8 @@ class _TarefaPageState extends State<TarefaPage> {
   }
 
   bool _reproduzSom = true;
+  bool carregando = false;
+
   @override
   Widget build(BuildContext context) {
     if (_reproduzSom) {
@@ -220,47 +250,57 @@ class _TarefaPageState extends State<TarefaPage> {
                           );
                         },
                       ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'EXCLUIR',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        onPressed: () {
-                          Widget okButton = FlatButton(
-                            child: const Text("CANCELAR"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          );
-                          Widget cancelaButton = FlatButton(
-                            child: const Text("OK"),
-                            onPressed: () {
-                              _excluirTarefa(
-                                  widget.tarefa['id'].toString(), context);
-                              Navigator.of(context).pop();
-                            },
-                          );
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Tem certeza?"),
-                                actionsAlignment: MainAxisAlignment.spaceEvenly,
-                                actions: [
-                                  okButton,
-                                  cancelaButton,
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
+                      carregando
+                          ? CircularProgressIndicator()
+                          : TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                elevation: 15,
+                              ),
+                              child: Text(
+                                'EXCLUIR',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  carregando = true;
+                                });
+                                Widget okButton = FlatButton(
+                                  child: const Text("CANCELAR"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                                Widget cancelaButton = FlatButton(
+                                  child: const Text("OK"),
+                                  onPressed: () {
+                                    _excluirTarefa(
+                                        widget.tarefa['id'].toString(),
+                                        context);
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Tem certeza?"),
+                                      actionsAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      actions: [
+                                        okButton,
+                                        cancelaButton,
+                                      ],
+                                    );
+                                  },
+                                );
+                                setState(() {
+                                  carregando = false;
+                                });
+                              },
+                            ),
                     ],
                   ),
                   const SizedBox(
@@ -282,7 +322,42 @@ class _TarefaPageState extends State<TarefaPage> {
                               color: Colors.white,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              carregando = true;
+                            });
+                            Widget okButton = FlatButton(
+                              child: const Text("CANCELAR"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                            Widget cancelaButton = FlatButton(
+                              child: const Text("OK"),
+                              onPressed: () {
+                                _finalizaTarefa(
+                                    widget.tarefa['id'].toString(), context);
+                                Navigator.of(context).pop();
+                              },
+                            );
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Tem certeza?"),
+                                  actionsAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  actions: [
+                                    okButton,
+                                    cancelaButton,
+                                  ],
+                                );
+                              },
+                            );
+                            setState(() {
+                              carregando = false;
+                            });
+                          },
                         ),
                       ),
                     ],

@@ -17,6 +17,8 @@ class TarefasPage extends StatefulWidget {
 }
 
 class _TarefasPageState extends State<TarefasPage> {
+  late Future<List> todasTarefas;
+
   Future<List> pegarTarefas() async {
     var token = widget.token;
     var headers = {'Authorization': 'Bearer $token'};
@@ -31,8 +33,14 @@ class _TarefasPageState extends State<TarefasPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    todasTarefas = pegarTarefas();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var listTarefas = pegarTarefas();
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement<void, void>(
@@ -46,22 +54,9 @@ class _TarefasPageState extends State<TarefasPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Tarefas'),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-            ),
-            onPressed: () {
-              Navigator.pushReplacement<void, void>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(token: widget.token),
-                ),
-              );
-            },
-          ),
         ),
         body: FutureBuilder<List>(
-          future: listTarefas,
+          future: todasTarefas,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Center(
@@ -80,14 +75,19 @@ class _TarefasPageState extends State<TarefasPage> {
                   var tarefa = snapshot.data![index];
                   return Card(
                     child: ListTile(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        bool retorno = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 TarefaPage(tarefa: tarefa, token: widget.token),
                           ),
                         );
+                        if (retorno) {
+                          setState(() {
+                            todasTarefas = pegarTarefas();
+                          });
+                        }
                       },
                       leading: const Icon(Icons.calendar_today, size: 50),
                       title: Text(tarefa['descricao']),
@@ -107,13 +107,18 @@ class _TarefasPageState extends State<TarefasPage> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            bool criou = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => CriarTarefa(token: widget.token),
               ),
             );
+            if (criou) {
+              setState(() {
+                todasTarefas = pegarTarefas();
+              });
+            }
           },
           tooltip: 'Criar tarefa',
           child: const Icon(Icons.add),
