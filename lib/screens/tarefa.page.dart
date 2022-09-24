@@ -133,7 +133,8 @@ class _TarefaPageState extends State<TarefaPage> {
   }
 
   bool _reproduzSom = true;
-  bool carregando = false;
+  bool carregandoExcluir = false;
+  bool carregandoFinalizar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -251,7 +252,7 @@ class _TarefaPageState extends State<TarefaPage> {
                           );
                         },
                       ),
-                      carregando
+                      carregandoExcluir
                           ? CircularProgressIndicator()
                           : TextButton(
                               style: TextButton.styleFrom(
@@ -265,28 +266,22 @@ class _TarefaPageState extends State<TarefaPage> {
                                 ),
                               ),
                               onPressed: () async {
-                                setState(() {
-                                  carregando = true;
-                                });
                                 Widget cancelaButton = FlatButton(
                                   child: const Text("CANCELAR"),
-                                  onPressed: () async {
-                                    //await Future.delayed(Duration(seconds: 2));
-                                    setState(() {
-                                      carregando = false;
-                                    });
+                                  onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 );
                                 Widget okButton = FlatButton(
                                   child: const Text("OK"),
-                                  onPressed: () async {
+                                  onPressed: () {
+                                    setState(() {
+                                      carregandoExcluir = true;
+                                    });
                                     _excluirTarefa(
                                         widget.tarefa['id'].toString(),
                                         context);
-                                    setState(() {
-                                      carregando = false;
-                                    });
+
                                     Navigator.of(context).pop();
                                   },
                                 );
@@ -316,62 +311,54 @@ class _TarefaPageState extends State<TarefaPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            elevation: 15,
-                          ),
-                          child: const Text(
-                            'FINALIZAR',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              carregando = true;
-                            });
-                            Widget okButton = FlatButton(
-                              child: const Text("CANCELAR"),
-                              onPressed: () {
-                                setState(() {
-                                  carregando = false;
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            );
-                            Widget cancelaButton = FlatButton(
-                              child: const Text("OK"),
-                              onPressed: () async {
-                                _finalizaTarefa(
-                                    widget.tarefa['id'].toString(), context);
-                                setState(() {
-                                  carregando = false;
-                                });
-                                Navigator.of(context).pop();
-                              },
-                            );
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Tem certeza?"),
-                                  actionsAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  actions: [
-                                    okButton,
-                                    cancelaButton,
-                                  ],
-                                );
-                              },
-                            );
-                            await Future.delayed(Duration(seconds: 2));
-
-                            setState(() {
-                              carregando = false;
-                            });
-                          },
-                        ),
+                        child: carregandoFinalizar
+                            ? CircularProgressIndicator()
+                            : TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  elevation: 15,
+                                ),
+                                child: const Text(
+                                  'FINALIZAR',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  Widget okButton = FlatButton(
+                                    child: const Text("CANCELAR"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  Widget cancelaButton = FlatButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      setState(() {
+                                        carregandoFinalizar = true;
+                                      });
+                                      _finalizaTarefa(
+                                          widget.tarefa['id'].toString(),
+                                          context);
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Tem certeza?"),
+                                        actionsAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        actions: [
+                                          okButton,
+                                          cancelaButton,
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                       ),
                     ],
                   )

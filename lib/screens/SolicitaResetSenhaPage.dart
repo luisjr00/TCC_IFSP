@@ -58,6 +58,9 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
           return AlertaMensagem(mensagem: mensagem);
         },
       );
+      setState(() {
+        carregando = false;
+      });
     }
   }
 
@@ -110,9 +113,6 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            carregando = true;
-                          });
                           if (controladorCampoEmail.text.isEmpty) {
                             showDialog(
                               context: context,
@@ -122,6 +122,9 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
                               },
                             );
                           } else {
+                            setState(() {
+                              carregando = true;
+                            });
                             var reset = DadosResetSenha();
                             reset.email = controladorCampoEmail.text;
                             _solicitaReset(reset);

@@ -39,6 +39,12 @@ class _TarefasPageState extends State<TarefasPage> {
     todasTarefas = pegarTarefas();
   }
 
+  Future<void> _recarregaLista() async {
+    setState(() {
+      todasTarefas = pegarTarefas();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -69,36 +75,39 @@ class _TarefasPageState extends State<TarefasPage> {
                   child: Text('Não existe tarefas'),
                 );
               }
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  var tarefa = snapshot.data![index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () async {
-                        bool retorno = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TarefaPage(tarefa: tarefa, token: widget.token),
-                          ),
-                        );
-                        if (retorno) {
-                          setState(() {
-                            todasTarefas = pegarTarefas();
-                          });
-                        }
-                      },
-                      leading: const Icon(Icons.calendar_today, size: 50),
-                      title: Text(tarefa['descricao']),
-                      // ignore: prefer_interpolation_to_compose_strings
-                      subtitle: Text('Hora: ' +
-                          tarefa['horaAlerta'] +
-                          ', Data: ' +
-                          tarefa['dataAlerta']),
-                    ),
-                  );
-                },
+              return RefreshIndicator(
+                onRefresh: _recarregaLista,
+                child: ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    var tarefa = snapshot.data![index];
+                    return Card(
+                      child: ListTile(
+                        onTap: () async {
+                          bool retorno = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TarefaPage(
+                                  tarefa: tarefa, token: widget.token),
+                            ),
+                          );
+                          if (retorno) {
+                            setState(() {
+                              todasTarefas = pegarTarefas();
+                            });
+                          }
+                        },
+                        leading: const Icon(Icons.calendar_today, size: 50),
+                        title: Text(tarefa['descricao']),
+                        // ignore: prefer_interpolation_to_compose_strings
+                        subtitle: Text('Hora: ' +
+                            tarefa['horaAlerta'] +
+                            ', Data: ' +
+                            tarefa['dataAlerta']),
+                      ),
+                    );
+                  },
+                ),
               );
             }
             return const Center(

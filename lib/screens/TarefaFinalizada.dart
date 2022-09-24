@@ -127,7 +127,7 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
                       ),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -136,21 +136,29 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
                                 style: TextStyle(fontSize: 30),
                                 textAlign: TextAlign.center,
                               ),
+                              Divider(),
                               Text(
-                                'Criada em ' + widget.tarefa['dataCriacao'],
+                                'Criada: ' + widget.tarefa['dataCriacao'],
                                 style: TextStyle(fontSize: 30),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'Finalizada em ' +
+                                'Finalizada: ' +
                                     widget.tarefa['dataFinalizacao'],
                                 style: TextStyle(fontSize: 30),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'Horario do alerta :' +
+                                'Data do alerta: ' +
+                                    widget.tarefa['dataAlerta'],
+                                style: TextStyle(fontSize: 30),
+                                textAlign: TextAlign.center,
+                              ),
+                              Divider(),
+                              Text(
+                                'Horario do alerta: ' +
                                     widget.tarefa['horaAlerta'],
                                 style: TextStyle(fontSize: 30),
                                 textAlign: TextAlign.center,
@@ -161,39 +169,6 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
                                 },
                                 child: Text(isSpeaking ? "Parar" : "Repetir"),
                               )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          border: Border.fromBorderSide(
-                            BorderSide(
-                                width: 4,
-                                color: Colors.black,
-                                style: BorderStyle.solid), //BorderSide
-                          )),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                widget.tarefa['horaAlerta'],
-                                style: TextStyle(fontSize: 30),
-                              ),
-                              Divider(
-                                color: Colors.black,
-                              ),
-                              Text(
-                                widget.tarefa['dataAlerta'],
-                                style: TextStyle(fontSize: 30),
-                              ),
                             ],
                           ),
                         ),
@@ -224,27 +199,21 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
                                 ),
                               ),
                               onPressed: () async {
-                                setState(() {
-                                  carregando = true;
-                                });
                                 Widget cancelaButton = FlatButton(
                                   child: const Text("CANCELAR"),
                                   onPressed: () {
-                                    setState(() {
-                                      carregando = false;
-                                    });
                                     Navigator.of(context).pop();
                                   },
                                 );
                                 Widget okButton = FlatButton(
                                   child: const Text("OK"),
                                   onPressed: () {
+                                    setState(() {
+                                      carregando = true;
+                                    });
                                     _excluirTarefa(
                                         widget.tarefa['id'].toString(),
                                         context);
-                                    setState(() {
-                                      carregando = false;
-                                    });
                                     Navigator.of(context).pop();
                                   },
                                 );
