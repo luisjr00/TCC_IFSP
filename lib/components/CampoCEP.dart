@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CampoCEP extends StatefulWidget {
-  final TextEditingController controlador;
+  final TextEditingController controladorCEP;
+  final TextEditingController controladorEnderecoCompleto;
   final String? rotulo;
   final IconData? icone;
   final String? dica;
@@ -11,11 +12,12 @@ class CampoCEP extends StatefulWidget {
 
   const CampoCEP({
     super.key,
-    required this.controlador,
+    required this.controladorCEP,
     this.rotulo,
     this.dica,
     this.icone,
     this.teclado,
+    required this.controladorEnderecoCompleto,
   });
 
   @override
@@ -60,7 +62,7 @@ class _CampoCEPState extends State<CampoCEP> {
     return Column(
       children: [
         TextFormField(
-          controller: widget.controlador,
+          controller: widget.controladorCEP,
           // ignore: prefer_if_null_operators
           keyboardType:
               widget.teclado != null ? widget.teclado : TextInputType.number,
@@ -80,8 +82,9 @@ class _CampoCEPState extends State<CampoCEP> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                if (widget.controlador.text.isEmpty) {}
-                buscaEndereco(widget.controlador.text);
+                if (widget.controladorCEP.text.isEmpty) {}
+                buscaEndereco(widget.controladorCEP.text);
+                widget.controladorEnderecoCompleto.text = endereco.toString();
               },
             ),
             errorText: retornoMensagemErroEndereco ? mensagemErroCep : null,
