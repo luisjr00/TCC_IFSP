@@ -32,6 +32,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
   final _controladorCampoEndereco = TextEditingController();
   final _controladorCampoSenha = TextEditingController();
   final _controladorCampoConfSenha = TextEditingController();
+  final _controladorCampoCEP = TextEditingController();
 
   @override
   void dispose() {
@@ -180,7 +181,8 @@ class _CadastroPage1 extends State<CadastroPage1> {
                     height: 10,
                   ),
                   CampoCEP(
-                      controlador: _controladorCampoEndereco,
+                      controladorCEP: _controladorCampoCEP,
+                      controladorEnderecoCompleto: _controladorCampoEndereco,
                       rotulo: 'Endereço',
                       dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
                       icone: Icons.home),

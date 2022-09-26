@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:validatorless/validatorless.dart';
-
 class CampoCEP extends StatefulWidget {
   final TextEditingController controlador;
   final String? rotulo;
@@ -101,6 +99,7 @@ class Endereco {
   final String Cidade;
   final String Bairro;
   final String NomeRua;
+  String? numero;
 
   @override
   toString() {
