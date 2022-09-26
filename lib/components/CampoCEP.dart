@@ -91,6 +91,10 @@ class _CampoCEPState extends State<CampoCEP> {
           ),
           style: const TextStyle(fontSize: 20),
         ),
+        if (endereco != null)
+          const SizedBox(
+            height: 3,
+          ),
         endereco == null ? const Text('') : Text(endereco.toString()),
       ],
     );

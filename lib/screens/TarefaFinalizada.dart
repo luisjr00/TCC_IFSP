@@ -5,6 +5,8 @@ import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../models/Token.dart';
+
 // ignore: must_be_immutable
 class TarefaFinalizada extends StatefulWidget {
   Map<String, dynamic> tarefa;
@@ -101,6 +103,8 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
 
   @override
   Widget build(BuildContext context) {
+    String role = ConverteToken(widget.token).ConverteTokenParaRole();
+
     return Scaffold(
       appBar: AppBar(title: Text('Finalizada')),
       body: Center(
@@ -182,59 +186,60 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
               ),
               Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      carregando
-                          ? CircularProgressIndicator()
-                          : TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                elevation: 15,
-                              ),
-                              child: Text(
-                                'EXCLUIR',
-                                style: TextStyle(
-                                  color: Colors.white,
+                  if (role != "idoso")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        carregando
+                            ? CircularProgressIndicator()
+                            : TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  elevation: 15,
                                 ),
+                                child: Text(
+                                  'EXCLUIR',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  Widget cancelaButton = FlatButton(
+                                    child: const Text("CANCELAR"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  Widget okButton = FlatButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      setState(() {
+                                        carregando = true;
+                                      });
+                                      _excluirTarefa(
+                                          widget.tarefa['id'].toString(),
+                                          context);
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Tem certeza?"),
+                                        actionsAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        actions: [
+                                          cancelaButton,
+                                          okButton,
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                              onPressed: () async {
-                                Widget cancelaButton = FlatButton(
-                                  child: const Text("CANCELAR"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                                Widget okButton = FlatButton(
-                                  child: const Text("OK"),
-                                  onPressed: () {
-                                    setState(() {
-                                      carregando = true;
-                                    });
-                                    _excluirTarefa(
-                                        widget.tarefa['id'].toString(),
-                                        context);
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Tem certeza?"),
-                                      actionsAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      actions: [
-                                        cancelaButton,
-                                        okButton,
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ],

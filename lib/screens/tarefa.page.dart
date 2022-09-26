@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
-import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../models/Token.dart';
 import 'CriarTarefaPage.dart';
 
 // ignore: must_be_immutable
@@ -142,6 +142,9 @@ class _TarefaPageState extends State<TarefaPage> {
       speak();
       _reproduzSom = false;
     }
+
+    String role = ConverteToken(widget.token).ConverteTokenParaRole();
+
     return Scaffold(
       appBar: AppBar(title: Text('Tarefa')),
       body: Center(
@@ -228,81 +231,82 @@ class _TarefaPageState extends State<TarefaPage> {
               ),
               Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'EDITAR',
-                          style: TextStyle(
-                            color: Colors.white,
+                  if (role != "idoso")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            elevation: 15,
                           ),
+                          child: const Text(
+                            'EDITAR',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CriarTarefa(
+                                    tarefa: widget.tarefa, token: widget.token),
+                              ),
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CriarTarefa(
-                                  tarefa: widget.tarefa, token: widget.token),
-                            ),
-                          );
-                        },
-                      ),
-                      carregandoExcluir
-                          ? CircularProgressIndicator()
-                          : TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                elevation: 15,
-                              ),
-                              child: Text(
-                                'EXCLUIR',
-                                style: TextStyle(
-                                  color: Colors.white,
+                        carregandoExcluir
+                            ? CircularProgressIndicator()
+                            : TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  elevation: 15,
                                 ),
-                              ),
-                              onPressed: () async {
-                                Widget cancelaButton = FlatButton(
-                                  child: const Text("CANCELAR"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                                Widget okButton = FlatButton(
-                                  child: const Text("OK"),
-                                  onPressed: () {
-                                    setState(() {
-                                      carregandoExcluir = true;
-                                    });
-                                    _excluirTarefa(
-                                        widget.tarefa['id'].toString(),
-                                        context);
+                                child: Text(
+                                  'EXCLUIR',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  Widget cancelaButton = FlatButton(
+                                    child: const Text("CANCELAR"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  Widget okButton = FlatButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      setState(() {
+                                        carregandoExcluir = true;
+                                      });
+                                      _excluirTarefa(
+                                          widget.tarefa['id'].toString(),
+                                          context);
 
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Tem certeza?"),
-                                      actionsAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      actions: [
-                                        cancelaButton,
-                                        okButton,
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                    ],
-                  ),
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Tem certeza?"),
+                                        actionsAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        actions: [
+                                          cancelaButton,
+                                          okButton,
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                      ],
+                    ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -315,23 +319,25 @@ class _TarefaPageState extends State<TarefaPage> {
                             ? CircularProgressIndicator()
                             : TextButton(
                                 style: TextButton.styleFrom(
+                                  minimumSize: Size(300, 100),
                                   backgroundColor: Colors.green,
                                   elevation: 15,
                                 ),
                                 child: const Text(
                                   'FINALIZAR',
                                   style: TextStyle(
+                                    fontSize: 25,
                                     color: Colors.white,
                                   ),
                                 ),
                                 onPressed: () async {
-                                  Widget okButton = FlatButton(
+                                  Widget cancelaButton = FlatButton(
                                     child: const Text("CANCELAR"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                   );
-                                  Widget cancelaButton = FlatButton(
+                                  Widget okButton = FlatButton(
                                     child: const Text("OK"),
                                     onPressed: () {
                                       setState(() {
@@ -351,8 +357,8 @@ class _TarefaPageState extends State<TarefaPage> {
                                         actionsAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         actions: [
-                                          okButton,
                                           cancelaButton,
+                                          okButton,
                                         ],
                                       );
                                     },
