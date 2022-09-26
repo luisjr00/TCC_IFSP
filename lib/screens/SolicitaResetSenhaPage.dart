@@ -18,6 +18,12 @@ class SolitaResetSenha extends StatefulWidget {
 
 class _SolitaResetSenha extends State<SolitaResetSenha> {
   final TextEditingController controladorCampoEmail = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void dispose() {
+    controladorCampoEmail.dispose();
+    super.dispose();
+  }
 
   int _gerarNumero() {
     int numero = 0;
@@ -87,51 +93,48 @@ class _SolitaResetSenha extends State<SolitaResetSenha> {
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CampoPreenchimento(
-                  controlador: controladorCampoEmail,
-                  rotulo: 'Email',
-                  dica: 'example@example.com',
-                  icone: Icons.email,
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                carregando
-                    ? CircularProgressIndicator()
-                    : TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          elevation: 15,
-                        ),
-                        child: const Text(
-                          'SOLICITAR RESET SENHA',
-                          style: TextStyle(
-                            color: Colors.white,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CampoPreenchimentoEmail(
+                    controlador: controladorCampoEmail,
+                    rotulo: 'Email',
+                    dica: 'example@example.com',
+                    icone: Icons.email,
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  carregando
+                      ? const CircularProgressIndicator()
+                      : TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            elevation: 15,
                           ),
+                          child: const Text(
+                            'SOLICITAR RESET SENHA',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            var formValid =
+                                _formKey.currentState?.validate() ?? false;
+                            if (formValid) {
+                              setState(() {
+                                carregando = true;
+                              });
+                              var reset = DadosResetSenha();
+                              reset.email = controladorCampoEmail.text;
+                              _solicitaReset(reset);
+                            }
+                          },
                         ),
-                        onPressed: () {
-                          if (controladorCampoEmail.text.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertaMensagem(
-                                    mensagem: "Informe um email!");
-                              },
-                            );
-                          } else {
-                            setState(() {
-                              carregando = true;
-                            });
-                            var reset = DadosResetSenha();
-                            reset.email = controladorCampoEmail.text;
-                            _solicitaReset(reset);
-                          }
-                        },
-                      ),
-              ],
+                ],
+              ),
             ),
           ),
         ));
