@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
 import 'package:http/http.dart' as http;
+import '../components/CampoCEP.dart';
 import '../components/CampoData.dart';
 import '../components/CampoPreenchimento.dart';
 import '../components/CamposSenha.dart';
@@ -178,13 +179,13 @@ class _CadastroPage1 extends State<CadastroPage1> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CampoPreenchimento(
+                  CampoCEP(
                       controlador: _controladorCampoEndereco,
                       rotulo: 'Endereço',
                       dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
                       icone: Icons.home),
                   const SizedBox(
-                    height: 10,
+                    height: 0,
                   ),
                   CamposSenha(
                     controlador: _controladorCampoSenha,
@@ -197,7 +198,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
                       controlador: _controladorCampoConfSenha,
                       rotulo: 'Confirmar Senha'),
                   const SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                 ],
               ),
