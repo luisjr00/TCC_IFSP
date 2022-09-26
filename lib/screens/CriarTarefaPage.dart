@@ -18,6 +18,8 @@ class CriarTarefa extends StatefulWidget {
 }
 
 class _CriarTarefaState extends State<CriarTarefa> {
+  final _formKey = GlobalKey<FormState>();
+
   void _criaTarefa(Tarefa tarefa) async {
     var response = await realizaPostTarefa(tarefa);
 
@@ -131,106 +133,114 @@ class _CriarTarefaState extends State<CriarTarefa> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CampoPreenchimento(
-                controlador: controladorCampoDescricao,
-                rotulo: 'Descrição',
-                dica: 'Ex. Dar comida para o rex',
-              ),
-              CampoHora(
-                  controlador: controladorCampoHoraAlerta,
-                  rotulo: 'Hora do alerta'),
-              CampoData(
-                controlador: controladorCampoDataAlerta,
-                rotulo: 'Data do alarme',
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        elevation: 15,
-                      ),
-                      child: const Text(
-                        'CANCELAR',
-                        style: TextStyle(
-                          color: Colors.white,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CampoPreenchimento(
+                  controlador: controladorCampoDescricao,
+                  rotulo: 'Descrição',
+                  dica: 'Ex. Dar comida para o rex',
+                ),
+                CampoHora(
+                    controlador: controladorCampoHoraAlerta,
+                    rotulo: 'Hora do alerta'),
+                CampoData(
+                  controlador: controladorCampoDataAlerta,
+                  rotulo: 'Data do alarme',
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 8.0, 16.0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          elevation: 15,
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 16.0, 60.0, 16.0),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.yellow,
-                        elevation: 15,
-                      ),
-                      child: const Text(
-                        'LIMPAR',
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      onPressed: () {
-                        controladorCampoDescricao.text = '';
-                        controladorCampoHoraAlerta.text = '';
-                        controladorCampoDataAlerta.text = '';
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
-                    child: carregando
-                        ? CircularProgressIndicator()
-                        : TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              elevation: 15,
-                            ),
-                            child: const Text(
-                              'SALVAR',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                carregando = true;
-                              });
-                              var tarefa = Tarefa(
-                                  controladorCampoDescricao.text,
-                                  controladorCampoHoraAlerta.text,
-                                  controladorCampoDataAlerta.text);
-
-                              if (widget.tarefa != null) {
-                                _atualizaTarefa(
-                                    tarefa, widget.tarefa['id'].toString());
-                              } else {
-                                _criaTarefa(tarefa);
-                              }
-                              await Future.delayed(Duration(seconds: 2));
-
-                              setState(() {
-                                carregando = false;
-                              });
-                            },
+                        child: const Text(
+                          'CANCELAR',
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
-                  ),
-                ],
-              ),
-            ],
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 16.0, 60.0, 16.0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.yellow,
+                          elevation: 15,
+                        ),
+                        child: const Text(
+                          'LIMPAR',
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          controladorCampoDescricao.text = '';
+                          controladorCampoHoraAlerta.text = '';
+                          controladorCampoDataAlerta.text = '';
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(60.0, 16.0, 16.0, 16.0),
+                      child: carregando
+                          ? CircularProgressIndicator()
+                          : TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                elevation: 15,
+                              ),
+                              child: const Text(
+                                'SALVAR',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onPressed: () async {
+                                var formValid =
+                                    _formKey.currentState?.validate() ?? false;
+                                if (formValid) {
+                                  setState(() {
+                                    carregando = true;
+                                  });
+                                  var tarefa = Tarefa(
+                                      controladorCampoDescricao.text,
+                                      controladorCampoHoraAlerta.text,
+                                      controladorCampoDataAlerta.text);
+
+                                  if (widget.tarefa != null) {
+                                    _atualizaTarefa(
+                                        tarefa, widget.tarefa['id'].toString());
+                                  } else {
+                                    _criaTarefa(tarefa);
+                                  }
+                                  await Future.delayed(Duration(seconds: 2));
+
+                                  setState(() {
+                                    carregando = false;
+                                  });
+                                }
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
