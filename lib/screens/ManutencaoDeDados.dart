@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/EdicaoDeDados.dart';
 
 import 'package:flutter_application_1/screens/cadastro.page2.dart';
 import 'package:flutter_application_1/screens/login.page.dart';
@@ -50,7 +51,14 @@ class _ManutencaoDeDados extends State<ManutencaoDeDados> {
                       primary: Colors.white,
                       onPrimary: Colors.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EdicaoDeDados(token: widget.token)),
+                      );
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [

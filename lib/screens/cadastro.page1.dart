@@ -9,7 +9,6 @@ import '../components/CampoPreenchimento.dart';
 import '../components/CamposSenha.dart';
 import '../components/LogoETitulo.dart';
 import '../models/CadastroUsuario.dart';
-import 'cadastro.page2.dart';
 import 'dart:convert';
 
 // ignore: must_be_immutable
