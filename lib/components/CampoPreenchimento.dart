@@ -7,6 +7,7 @@ class CampoPreenchimento extends StatelessWidget {
   final IconData? icone;
   final String? dica;
   final TextInputType? teclado;
+  final bool? naoMostrar;
 
   const CampoPreenchimento({
     super.key,
@@ -15,6 +16,7 @@ class CampoPreenchimento extends StatelessWidget {
     this.dica,
     this.icone,
     this.teclado,
+    this.naoMostrar,
   });
 
   @override
@@ -31,6 +33,7 @@ class CampoPreenchimento extends StatelessWidget {
           fontWeight: FontWeight.w400,
           fontSize: 20,
         ),
+        enabled: naoMostrar == true ? false : true,
       ),
       style: const TextStyle(fontSize: 20),
       validator: Validatorless.multiple(

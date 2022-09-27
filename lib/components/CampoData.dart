@@ -5,33 +5,35 @@ import 'package:validatorless/validatorless.dart';
 class CampoData extends StatefulWidget {
   final TextEditingController controlador;
   final String rotulo;
-  const CampoData({Key? key, required this.controlador, required this.rotulo})
+  final bool? naoMostrar;
+  const CampoData(
+      {Key? key,
+      required this.controlador,
+      required this.rotulo,
+      this.naoMostrar})
       : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<CampoData> createState() => _CampoDataState(controlador, rotulo);
+  State<CampoData> createState() => _CampoDataState();
 }
 
 class _CampoDataState extends State<CampoData> {
-  TextEditingController controlador;
-  final String rotulo;
-  _CampoDataState(this.controlador, this.rotulo);
-
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controlador,
+      controller: widget.controlador,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.calendar_month),
-        labelText: rotulo,
+        labelText: widget.rotulo,
         hintText: 'dd/mm/aaaa',
         labelStyle: const TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,
           fontSize: 20,
         ),
+        enabled: widget.naoMostrar == true ? false : true,
       ),
       style: const TextStyle(fontSize: 20),
       validator: Validatorless.multiple([
@@ -49,7 +51,8 @@ class _CampoDataState extends State<CampoData> {
 
         if (pickeddate != null) {
           setState(() {
-            controlador.text = DateFormat('dd/MM/yyyy').format(pickeddate);
+            widget.controlador.text =
+                DateFormat('dd/MM/yyyy').format(pickeddate);
           });
         }
       },
