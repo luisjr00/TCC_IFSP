@@ -8,24 +8,20 @@ class CamposSenha extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<CamposSenha> createState() => _CamposSenhaState(controlador, rotulo);
+  State<CamposSenha> createState() => _CamposSenhaState();
 }
 
 class _CamposSenhaState extends State<CamposSenha> {
   bool _mostrarSenha = false;
-  final TextEditingController controlador;
-  final String rotulo;
-
-  _CamposSenhaState(this.controlador, this.rotulo);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controlador,
+      controller: widget.controlador,
       keyboardType: TextInputType.visiblePassword,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(1.0),
-        labelText: rotulo,
+        labelText: widget.rotulo,
         prefixIcon: const Icon(Icons.lock),
         suffixIcon: IconButton(
           icon: Icon(

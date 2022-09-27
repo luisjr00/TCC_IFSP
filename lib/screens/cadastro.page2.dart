@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
+import 'package:flutter_application_1/components/CampoCEP.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../components/CampoData.dart';
@@ -9,7 +10,6 @@ import '../components/CampoPreenchimento.dart';
 import '../components/CamposSenha.dart';
 import '../components/LogoETitulo.dart';
 import '../models/CadastroUsuario.dart';
-import 'login.page.dart';
 
 // ignore: must_be_immutable
 class CadastroPage2 extends StatefulWidget {
@@ -34,6 +34,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
   final _controladorCampoCpf = TextEditingController();
   final _controladorCampoDataNasc = TextEditingController();
   final _controladorCampoTelefone = TextEditingController();
+  final _controladorCampoCEP = TextEditingController();
   final _controladorCampoEndereco = TextEditingController();
   final _controladorCampoSenha = TextEditingController();
   final _controladorCampoConfSenha = TextEditingController();
@@ -45,7 +46,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
     _controladorCampoCpf.dispose();
     _controladorCampoDataNasc.dispose();
     _controladorCampoTelefone.dispose();
-    _controladorCampoEndereco.dispose();
+    _controladorCampoCEP.dispose();
     _controladorCampoSenha.dispose();
     _controladorCampoConfSenha.dispose();
     super.dispose();
@@ -72,12 +73,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
+      Navigator.pop(context, true);
     } else if (response.statusCode == 500) {
       var mensagem = Text(json[0]['message']).toString();
       showDialog(
@@ -122,7 +118,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(null),
+        title: const Text("Pessoa Assistida"),
       ),
       body: Form(
         key: _formKey,
@@ -134,33 +130,6 @@ class _CadastroPage2 extends State<CadastroPage2> {
             LogoTitulo(titulo: "Pessoa Assistida"),
             const SizedBox(
               height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    var formValid = _formKey.currentState?.validate() ?? false;
-                    Navigator.pop(context);
-                  },
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(18)),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.indigo),
-                    shape: MaterialStateProperty.all<CircleBorder>(
-                        const CircleBorder(
-                            //borderRadius: BorderRadius.circular(100),
-                            //side: BorderSide(color: Colors.indigo)
-                            )),
-                  ),
-                  child: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset("assets/up_arrow.png"),
-                  ),
-                ),
-              ],
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -204,8 +173,9 @@ class _CadastroPage2 extends State<CadastroPage2> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CampoPreenchimento(
-                      controlador: _controladorCampoEndereco,
+                  CampoCEP(
+                      controladorCEP: _controladorCampoCEP,
+                      controladorEnderecoCompleto: _controladorCampoEndereco,
                       rotulo: 'Endereço',
                       dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
                       icone: Icons.home),
@@ -269,6 +239,7 @@ class _CadastroPage2 extends State<CadastroPage2> {
                           var formValid =
                               _formKey.currentState?.validate() ?? false;
                           if (formValid) {
+                            print(_controladorCampoEndereco.text);
                             var responsavelId = _extraiResponsavelId(code);
                             var cadastro = CadastroUsuario(
                                 _controladorCampoNome.text,

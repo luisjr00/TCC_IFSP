@@ -21,13 +21,11 @@ class CampoPreenchimento extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controlador,
-      // ignore: prefer_if_null_operators
-      keyboardType: teclado != null ? teclado : TextInputType.name,
+      keyboardType: teclado ?? TextInputType.name,
       decoration: InputDecoration(
         prefixIcon: icone != null ? Icon(icone) : null,
         labelText: rotulo,
-        // ignore: prefer_if_null_operators
-        hintText: dica != null ? dica : null,
+        hintText: dica,
         labelStyle: const TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,
@@ -65,13 +63,11 @@ class CampoPreenchimentoEmail extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controlador,
-      // ignore: prefer_if_null_operators
-      keyboardType: teclado != null ? teclado : TextInputType.name,
+      keyboardType: teclado ?? TextInputType.name,
       decoration: InputDecoration(
         prefixIcon: icone != null ? Icon(icone) : null,
         labelText: rotulo,
-        // ignore: prefer_if_null_operators
-        hintText: dica != null ? dica : null,
+        hintText: dica,
         labelStyle: const TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,
@@ -109,13 +105,11 @@ class CampoPreenchimentoCpf extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controlador,
-      // ignore: prefer_if_null_operators
-      keyboardType: teclado != null ? teclado : TextInputType.name,
+      keyboardType: teclado ?? TextInputType.name,
       decoration: InputDecoration(
         prefixIcon: icone != null ? Icon(icone) : null,
         labelText: rotulo,
-        // ignore: prefer_if_null_operators
-        hintText: dica != null ? dica : null,
+        hintText: dica,
         labelStyle: const TextStyle(
           color: Colors.black38,
           fontWeight: FontWeight.w400,

@@ -33,6 +33,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
   final _controladorCampoSenha = TextEditingController();
   final _controladorCampoConfSenha = TextEditingController();
   final _controladorCampoCEP = TextEditingController();
+  final loading = ValueNotifier<bool>(false);
 
   @override
   void dispose() {
@@ -63,12 +64,7 @@ class _CadastroPage1 extends State<CadastroPage1> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CadastroPage2(code: code),
-        ),
-      );
+      Navigator.pop(context);
     } else if (response.statusCode == 500) {
       var mensagem = json[0]['message'].toString();
       showDialog(
@@ -205,10 +201,46 @@ class _CadastroPage1 extends State<CadastroPage1> {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
+            Container(
+              height: 50,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: const [0.3, 1],
+                  colors: [
+                    Colors.blue[900]!,
+                    Colors.blue,
+                  ],
+                ),
+              ),
+              child: SizedBox.expand(
+                child: TextButton(
+                  child: AnimatedBuilder(
+                      animation: loading,
+                      builder: (context, _) {
+                        return loading.value
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                "Cadastrar Dados",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              );
+                      }),
                   onPressed: () {
                     var formValid = _formKey.currentState?.validate() ?? false;
                     if (formValid) {
@@ -225,24 +257,8 @@ class _CadastroPage1 extends State<CadastroPage1> {
                       _criaCadastro(cadastro);
                     }
                   },
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(18)),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.indigo),
-                    shape: MaterialStateProperty.all<CircleBorder>(
-                        const CircleBorder(
-                            //borderRadius: BorderRadius.circular(100),
-                            //side: BorderSide(color: Colors.indigo)
-                            )),
-                  ),
-                  child: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset("assets/down_arrow.png"),
-                  ),
                 ),
-              ],
+              ),
             ),
             const SizedBox(
               height: 25,
@@ -253,3 +269,19 @@ class _CadastroPage1 extends State<CadastroPage1> {
     );
   }
 }
+// onPressed: () {
+//                     var formValid = _formKey.currentState?.validate() ?? false;
+//                     if (formValid) {
+//                       var cadastro = CadastroUsuario(
+//                           _controladorCampoNome.text,
+//                           _controladorCampoUsername.text,
+//                           _controladorCampoCpf.text,
+//                           _controladorCampoDataNasc.text,
+//                           _controladorCampoTelefone.text,
+//                           _controladorCampoEndereco.text,
+//                           _controladorCampoSenha.text,
+//                           _controladorCampoConfSenha.text);
+//                       cadastro.Email = _controladorCampoEmail.text;
+//                       _criaCadastro(cadastro);
+//                     }
+//                   },

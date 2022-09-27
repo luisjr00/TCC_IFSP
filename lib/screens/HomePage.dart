@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/HistoricoTarefas.dart';
+import 'package:flutter_application_1/screens/cadastro.page2.dart';
 import 'package:flutter_application_1/screens/login.page.dart';
 import 'package:flutter_application_1/screens/tarefas.page.dart';
+
+import '../models/Token.dart';
+import 'ManutencaoDeDados.dart';
 
 class HomePage extends StatefulWidget {
   var token;
@@ -36,6 +40,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String id = ConverteToken(widget.token).ConverteTokenParaId();
+    String role = ConverteToken(widget.token).ConverteTokenParaRole();
+
     return WillPopScope(
       onWillPop: () async {
         final confirmacao = await confirmacaoSairDoApp();
@@ -119,54 +126,6 @@ class _HomePageState extends State<HomePage> {
                         primary: Colors.white,
                         onPrimary: Colors.black,
                       ),
-                      onPressed: () {},
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.account_circle_outlined,
-                            size: 80,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'Dados da conta',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: 170,
-                    width: 150,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      border: Border.fromBorderSide(
-                        BorderSide(
-                          width: 4,
-                          color: Colors.black,
-                          style: BorderStyle.solid,
-                        ), //BorderSide
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -196,6 +155,62 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (role != "idoso")
+                    Container(
+                      height: 170,
+                      width: 150,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        border: Border.fromBorderSide(
+                          BorderSide(
+                            width: 4,
+                            color: Colors.black,
+                            style: BorderStyle.solid,
+                          ), //BorderSide
+                        ),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ManutencaoDeDados(token: widget.token)),
+                          );
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.folder_shared_outlined,
+                              size: 80,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Dados da conta',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   Container(
                     height: 170,
                     width: 150,

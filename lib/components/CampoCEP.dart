@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:validatorless/validatorless.dart';
+
 class CampoCEP extends StatefulWidget {
   final TextEditingController controladorCEP;
   final TextEditingController controladorEnderecoCompleto;
@@ -25,6 +27,8 @@ class CampoCEP extends StatefulWidget {
 }
 
 class _CampoCEPState extends State<CampoCEP> {
+  final _formKey = GlobalKey<FormState>();
+
   Future<http.Response> getEndereco(String cep) async {
     var url = Uri.parse("https://viacep.com.br/ws/$cep/json/");
     var response = await http.get(url);
@@ -33,6 +37,7 @@ class _CampoCEPState extends State<CampoCEP> {
   }
 
   void buscaEndereco(String cep) async {
+    var teste = cep.isEmpty;
     try {
       var response = await getEndereco(cep);
       if (response.statusCode == 200) {
@@ -43,6 +48,11 @@ class _CampoCEPState extends State<CampoCEP> {
         setState(() {
           endereco = criaEndereco;
           retornoMensagemErroEndereco = false;
+        });
+      } else {
+        setState(() {
+          retornoMensagemErroEndereco = true;
+          endereco = null;
         });
       }
     } catch (Excepetsion) {
@@ -59,44 +69,55 @@ class _CampoCEPState extends State<CampoCEP> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: widget.controladorCEP,
-          // ignore: prefer_if_null_operators
-          keyboardType:
-              widget.teclado != null ? widget.teclado : TextInputType.number,
-
-          decoration: InputDecoration(
-            prefixIcon: widget.icone != null
-                ? Icon(widget.icone)
-                : const Icon(Icons.pin),
-            labelText: "CEP",
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: widget.controladorCEP,
             // ignore: prefer_if_null_operators
-            hintText: "00000-000",
-            labelStyle: const TextStyle(
-              color: Colors.black38,
-              fontWeight: FontWeight.w400,
-              fontSize: 20,
+            keyboardType:
+                widget.teclado != null ? widget.teclado : TextInputType.number,
+
+            decoration: InputDecoration(
+              prefixIcon: widget.icone != null
+                  ? Icon(widget.icone)
+                  : const Icon(Icons.pin),
+              labelText: "CEP",
+              // ignore: prefer_if_null_operators
+              hintText: "00000-000",
+              labelStyle: const TextStyle(
+                color: Colors.black38,
+                fontWeight: FontWeight.w400,
+                fontSize: 20,
+              ),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  var formValid = _formKey.currentState?.validate() ?? false;
+                  if (formValid) {
+                    buscaEndereco(widget.controladorCEP.text);
+                    widget.controladorEnderecoCompleto.text =
+                        endereco.toString();
+                  }
+                },
+              ),
+              errorText: retornoMensagemErroEndereco ? mensagemErroCep : null,
             ),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                if (widget.controladorCEP.text.isEmpty) {}
-                buscaEndereco(widget.controladorCEP.text);
-                widget.controladorEnderecoCompleto.text = endereco.toString();
-              },
+            style: const TextStyle(fontSize: 20),
+            validator: Validatorless.multiple(
+              [
+                Validatorless.required("Campo requerido"),
+              ],
             ),
-            errorText: retornoMensagemErroEndereco ? mensagemErroCep : null,
           ),
-          style: const TextStyle(fontSize: 20),
-        ),
-        if (endereco != null)
-          const SizedBox(
-            height: 3,
-          ),
-        endereco == null ? const Text('') : Text(endereco.toString()),
-      ],
+          if (endereco != null)
+            const SizedBox(
+              height: 3,
+            ),
+          endereco == null ? const Text('') : Text(endereco.toString()),
+        ],
+      ),
     );
   }
 }
