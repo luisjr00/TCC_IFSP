@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
+import 'package:flutter_application_1/screens/HistoricoTarefas.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -29,7 +30,12 @@ class _TarefaFinalizadaState extends State<TarefaFinalizada> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HistoricoTarefas(token: widget.token),
+        ),
+      );
     } else {
       var mensagem = 'Erro ao excluir tarefa';
       showDialog(

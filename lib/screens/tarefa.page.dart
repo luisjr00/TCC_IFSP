@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
+import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -28,8 +29,15 @@ class _TarefaPageState extends State<TarefaPage> {
       );
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      //Navigator.pop(context, true);
       // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TarefasPage(token: widget.token),
+        ),
+      );
     } else {
       var mensagem = 'Erro ao excluir tarefa';
       showDialog(

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/AlertaMensagem.dart';
+import 'package:flutter_application_1/screens/tarefas.page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../components/CampoData.dart';
@@ -33,7 +34,13 @@ class _CriarTarefaState extends State<CriarTarefa> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.pop(context, true);
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TarefasPage(token: widget.token),
+        ),
+      );
     } else {
       var mensagem = json['errors']['Descricao'][0].toString();
 
@@ -72,11 +79,16 @@ class _CriarTarefaState extends State<CriarTarefa> {
       var snackBar = const SnackBar(
         content: Text('Tarefa atualizada com sucesso!'),
       );
-
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.pop(context, true);
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TarefasPage(token: widget.token),
+        ),
+      );
     } else {
       var mensagem = "Erro ao atualizar tarefa";
       showDialog(
@@ -217,6 +229,7 @@ class _CriarTarefaState extends State<CriarTarefa> {
                                   setState(() {
                                     carregando = true;
                                   });
+
                                   var tarefa = Tarefa(
                                       controladorCampoDescricao.text,
                                       controladorCampoHoraAlerta.text,

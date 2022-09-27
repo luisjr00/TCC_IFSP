@@ -49,7 +49,7 @@ class _TarefasPageState extends State<TarefasPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushReplacement<void, void>(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(token: widget.token),
