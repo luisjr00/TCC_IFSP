@@ -40,10 +40,16 @@ class _CampoDataState extends State<CampoData> {
         Validatorless.required("Campo requerido"),
       ]),
       onTap: () async {
+        var data = widget.controlador.text;
+        int? dia = int.tryParse(data.substring(1, 2));
+        int? mes = int.tryParse(data.substring(4, 5));
+        int? ano = int.tryParse(data.substring(6, 10));
         DateTime? pickeddate = await showDatePicker(
           context: context,
           keyboardType: TextInputType.emailAddress,
-          initialDate: DateTime.now(),
+          initialDate: widget.controlador.text.isNotEmpty
+              ? DateTime(ano!, mes!, dia!)
+              : DateTime.now(),
           firstDate: DateTime(1900),
           lastDate: DateTime(2100),
           locale: const Locale("pt", "BR"),
