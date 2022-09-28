@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/CampoPreenchimento.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -103,12 +104,12 @@ class _CampoCEPState extends State<CampoCEP> {
             ],
           ),
         ),
-        // if (retornoMensagemErroEndereco == false)
-        //   const SizedBox(
-        //     height: 3,
-        //   ),
-        // if (retornoMensagemErroEndereco == false)
-        //   Text(widget.controladorEnderecoCompleto.text),
+        CampoPreenchimentoArea(
+          controlador: widget.controladorEnderecoCompleto,
+          rotulo: "Endereço",
+          icone: Icons.home,
+          enable: true,
+        ),
       ],
     );
   }

@@ -98,7 +98,14 @@ class _ManutencaoDeDados extends State<ManutencaoDeDados> {
                       primary: Colors.white,
                       onPrimary: Colors.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EdicaoDeDadosAssistido(token: widget.token)),
+                      );
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [

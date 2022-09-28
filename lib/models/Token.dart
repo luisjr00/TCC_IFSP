@@ -21,7 +21,7 @@ class ConverteToken {
   String verificaSeTemAssistidoCadastrado() {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
     var verificado = (decodedToken["assistido"]);
-    if (verificado == null) return "0";
-    return "1";
+    if (verificado == 0 || verificado == null) return "0";
+    return verificado;
   }
 }

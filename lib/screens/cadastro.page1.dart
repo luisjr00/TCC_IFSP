@@ -180,15 +180,6 @@ class _CadastroPage1 extends State<CadastroPage1> {
                       controladorEnderecoCompleto: _controladorCampoEndereco,
                       icone: Icons.home),
                   const SizedBox(
-                    height: 0,
-                  ),
-                  CampoPreenchimento(
-                    controlador: _controladorCampoEndereco,
-                    rotulo: "Endereço",
-                    icone: Icons.home,
-                    enable: true,
-                  ),
-                  const SizedBox(
                     height: 15,
                   ),
                   CamposSenha(
