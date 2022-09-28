@@ -178,11 +178,18 @@ class _CadastroPage1 extends State<CadastroPage1> {
                   CampoCEP(
                       controladorCEP: _controladorCampoCEP,
                       controladorEnderecoCompleto: _controladorCampoEndereco,
-                      rotulo: 'Endereço',
-                      dica: 'Rua Exemplo, 999 - Exemplo - 99999-999',
                       icone: Icons.home),
                   const SizedBox(
                     height: 0,
+                  ),
+                  CampoPreenchimento(
+                    controlador: _controladorCampoEndereco,
+                    rotulo: "Endereço",
+                    icone: Icons.home,
+                    enable: true,
+                  ),
+                  const SizedBox(
+                    height: 15,
                   ),
                   CamposSenha(
                     controlador: _controladorCampoSenha,

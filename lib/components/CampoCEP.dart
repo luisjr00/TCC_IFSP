@@ -27,8 +27,6 @@ class CampoCEP extends StatefulWidget {
 }
 
 class _CampoCEPState extends State<CampoCEP> {
-  final _formKey = GlobalKey<FormState>();
-
   Future<http.Response> getEndereco(String cep) async {
     var url = Uri.parse("https://viacep.com.br/ws/$cep/json/");
     var response = await http.get(url);
@@ -36,88 +34,82 @@ class _CampoCEPState extends State<CampoCEP> {
     return response;
   }
 
-  void buscaEndereco(String cep) async {
-    var teste = cep.isEmpty;
-    try {
-      var response = await getEndereco(cep);
-      if (response.statusCode == 200) {
-        var json = jsonDecode(utf8.decode(response.bodyBytes));
-
-        Endereco criaEndereco = Endereco(
-            json['uf'], json['localidade'], json['bairro'], json['logradouro']);
-        setState(() {
-          endereco = criaEndereco;
-          retornoMensagemErroEndereco = false;
-        });
-      } else {
-        setState(() {
-          retornoMensagemErroEndereco = true;
-          endereco = null;
-        });
-      }
-    } catch (Excepetsion) {
-      setState(() {
-        retornoMensagemErroEndereco = true;
-        endereco = null;
-      });
-    }
-  }
-
-  var endereco;
   var retornoMensagemErroEndereco = false;
   String mensagemErroCep = 'CEP invalido';
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: widget.controladorCEP,
-            // ignore: prefer_if_null_operators
-            keyboardType:
-                widget.teclado != null ? widget.teclado : TextInputType.number,
+    return Column(
+      children: [
+        TextFormField(
+          controller: widget.controladorCEP,
+          // ignore: prefer_if_null_operators
+          keyboardType:
+              widget.teclado != null ? widget.teclado : TextInputType.number,
 
-            decoration: InputDecoration(
-              prefixIcon: widget.icone != null
-                  ? Icon(widget.icone)
-                  : const Icon(Icons.pin),
-              labelText: "CEP",
-              // ignore: prefer_if_null_operators
-              hintText: "00000-000",
-              labelStyle: const TextStyle(
-                color: Colors.black38,
-                fontWeight: FontWeight.w400,
-                fontSize: 20,
-              ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  var formValid = _formKey.currentState?.validate() ?? false;
-                  if (formValid) {
-                    buscaEndereco(widget.controladorCEP.text);
-                    widget.controladorEnderecoCompleto.text =
-                        endereco.toString();
+          decoration: InputDecoration(
+            prefixIcon: widget.icone != null
+                ? Icon(widget.icone)
+                : const Icon(Icons.pin),
+            labelText: "CEP",
+            // ignore: prefer_if_null_operators
+            hintText: "00000-000",
+            labelStyle: const TextStyle(
+              color: Colors.black38,
+              fontWeight: FontWeight.w400,
+              fontSize: 20,
+            ),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () async {
+                if (widget.controladorCEP.text.isEmpty) {
+                  setState(() {
+                    widget.controladorEnderecoCompleto.text = '';
+                    retornoMensagemErroEndereco = true;
+                    mensagemErroCep = 'Campo requerido';
+                  });
+                } else {
+                  try {
+                    var response =
+                        await getEndereco(widget.controladorCEP.text);
+                    if (response.statusCode == 200) {
+                      var json = jsonDecode(utf8.decode(response.bodyBytes));
+                      Endereco criaEndereco = Endereco(
+                          json['uf'],
+                          json['localidade'],
+                          json['bairro'],
+                          json['logradouro']);
+                      setState(() {
+                        retornoMensagemErroEndereco = false;
+                        widget.controladorEnderecoCompleto.text =
+                            criaEndereco.toString();
+                      });
+                    }
+                  } catch (exception) {
+                    setState(() {
+                      widget.controladorEnderecoCompleto.text = '';
+                      retornoMensagemErroEndereco = true;
+                    });
                   }
-                },
-              ),
-              errorText: retornoMensagemErroEndereco ? mensagemErroCep : null,
+                }
+              },
             ),
-            style: const TextStyle(fontSize: 20),
-            validator: Validatorless.multiple(
-              [
-                Validatorless.required("Campo requerido"),
-              ],
-            ),
+            errorText: retornoMensagemErroEndereco ? mensagemErroCep : null,
           ),
-          if (endereco != null)
-            const SizedBox(
-              height: 3,
-            ),
-          endereco == null ? const Text('') : Text(endereco.toString()),
-        ],
-      ),
+          style: const TextStyle(fontSize: 20),
+          validator: Validatorless.multiple(
+            [
+              Validatorless.required("Campo requerido"),
+            ],
+          ),
+        ),
+        // if (retornoMensagemErroEndereco == false)
+        //   const SizedBox(
+        //     height: 3,
+        //   ),
+        // if (retornoMensagemErroEndereco == false)
+        //   Text(widget.controladorEnderecoCompleto.text),
+      ],
     );
   }
 }
@@ -131,7 +123,7 @@ class Endereco {
 
   @override
   toString() {
-    return "Estado: $Estado, Cidade: $Cidade, Bairro: $Bairro, Rua: $NomeRua";
+    return "$NomeRua - $Bairro - $Cidade/$Estado";
   }
 
   Endereco(this.Estado, this.Cidade, this.Bairro, this.NomeRua);

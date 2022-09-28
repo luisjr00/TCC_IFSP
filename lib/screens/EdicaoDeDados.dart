@@ -77,7 +77,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       controlador: controladorCampoNome,
                       rotulo: 'Nome Completo',
                       icone: Icons.person,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
@@ -86,7 +86,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       controlador: controladorCampoUsername,
                       rotulo: 'Username',
                       icone: Icons.account_circle_outlined,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
@@ -96,7 +96,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       rotulo: 'CPF',
                       teclado: TextInputType.number,
                       icone: Icons.pin,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
@@ -115,7 +115,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       dica: '11 99999-9999',
                       teclado: TextInputType.phone,
                       icone: Icons.phone,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
@@ -126,7 +126,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       dica: 'name@example.com',
                       teclado: TextInputType.emailAddress,
                       icone: Icons.email,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
@@ -136,7 +136,7 @@ class _EdicaoDeDadosState extends State<EdicaoDeDados> {
                       rotulo: 'Endereco',
                       teclado: TextInputType.name,
                       icone: Icons.home,
-                      naoMostrar: true,
+                      enable: true,
                     ),
                     const SizedBox(
                       height: 10,
